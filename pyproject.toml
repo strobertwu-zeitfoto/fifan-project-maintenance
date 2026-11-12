@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fifan-project-maintenance"
+version = "1.4.2"
+description = "Local project health checks and guarded maintenance operations"
+requires-python = ">=3.9"
+dependencies = ["markdown-it-py==3.0.0", "mdurl==0.1.2", "PyYAML==6.0.3", "tomli==2.2.1; python_version < '3.11'"]
+
+[project.optional-dependencies]
+test = ["pytest==8.4.2"]
+
+[project.scripts]
+fifan-maintain = "fifan_maintenance.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[project.urls]
+Homepage = "https://www.fifanlabs.com"
+Repository = "https://github.com/strobertwu-zeitfoto/fifan-project-maintenance"
+Documentation = "https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/blob/main/docs/USAGE.md"

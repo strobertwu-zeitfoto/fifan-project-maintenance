@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "approval": {
+    "reference": "SYNTHETIC EXAMPLE ONLY: explicit quarantine and permanent loss approval for this exact batch",
+    "actions": [
+      "quarantine",
+      "purge"
+    ]
+  },
+  "items": [
+    {
+      "source": "builds/old",
+      "kind": "old_build",
+      "reason": "Synthetic task completed; this accurate candidate is retired.",
+      "closure": {
+        "decision": "closed",
+        "reason": "Retained synthetic closure decision.",
+        "evidence": [
+          {
+            "path": "decisions/closed.md",
+            "sha256": "2b0fd46c1528aaf7c132c2ad8610dd395dfa02c7d3f9c04ea9473c52132ddf9a"
+          }
+        ]
+      },
+      "loss": {
+        "accepted": true,
+        "rebuildable": "Unknown",
+        "unique_evidence": false,
+        "description": "Synthetic fixture only: approve permanent loss of original snapshot; rebuildability remains Unknown."
+      },
+      "retained": [
+        "builds/current.pkg"
+      ],
+      "disposition": "purge",
+      "build": {
+        "platform": "synthetic",
+        "branch": "example",
+        "configuration": "fixture",
+        "purpose": "rollback"
+      }
+    },
+    {
+      "source": "logs/closed.log",
+      "kind": "completed_log",
+      "reason": "Synthetic task completed; this accurate candidate is retired.",
+      "closure": {
+        "decision": "closed",
+        "reason": "Retained synthetic closure decision.",
+        "evidence": [
+          {
+            "path": "decisions/closed.md",
+            "sha256": "2b0fd46c1528aaf7c132c2ad8610dd395dfa02c7d3f9c04ea9473c52132ddf9a"
+          }
+        ]
+      },
+      "loss": {
+        "accepted": true,
+        "rebuildable": "Unknown",
+        "unique_evidence": false,
+        "description": "Synthetic fixture only: approve permanent loss of original snapshot; rebuildability remains Unknown."
+      },
+      "retained": [
+        "builds/current.pkg"
+      ],
+      "disposition": "purge"
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan private directory workflow receipt schema1",
+  "type": "object",
+  "required": [
+    "format",
+    "schema_version",
+    "root",
+    "profile_sha256",
+    "records_dir",
+    "archive_root",
+    "operation_id",
+    "phase",
+    "state",
+    "status",
+    "request",
+    "request_sha256",
+    "steps",
+    "batches",
+    "workflow_path",
+    "fingerprint"
+  ],
+  "properties": {
+    "format": {
+      "const": "fifan-directory-workflow"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "root": {
+      "type": "string"
+    },
+    "profile_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "records_dir": {
+      "type": "string"
+    },
+    "archive_root": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "operation_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "phase": {
+      "enum": [
+        "inspect",
+        "search",
+        "archive",
+        "restore"
+      ]
+    },
+    "state": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "request": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "request_sha256": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "step",
+          "status"
+        ],
+        "properties": {
+          "step": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "state": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "artifact": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "batches": {
+      "type": "array"
+    },
+    "workflow_path": {
+      "type": "string"
+    },
+    "fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "additionalProperties": true,
+  "description": "Private minimal execution receipts plus exact input references, not a product progress ledger. Default inspect never applies. Completed historical steps do not replace current verification, and terminal metric receipts may be appended after the measured observation."
+}

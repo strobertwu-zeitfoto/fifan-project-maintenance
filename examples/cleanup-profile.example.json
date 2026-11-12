@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "project_root": "/absolute/path/to/cleanup-example/project",
+  "preset": "generic",
+  "scan_roots": [
+    "."
+  ],
+  "current": [
+    "current/README.md",
+    "decisions/closed.md"
+  ],
+  "keep": [
+    {
+      "path": "builds/current.pkg",
+      "reason": "Retained synthetic rollback package; execution not tested.",
+      "build": {
+        "platform": "synthetic",
+        "branch": "example",
+        "configuration": "fixture",
+        "purpose": "rollback"
+      },
+      "sha256": "2c78a154a347dd00f78b0e4a91eec7638008f56ed2a907d1f381600afa152f90"
+    }
+  ],
+  "protected": [
+    "Assets"
+  ],
+  "candidates": [
+    {
+      "path": "builds/old",
+      "kind": "old_build"
+    },
+    {
+      "path": "logs/closed.log",
+      "kind": "completed_log"
+    }
+  ],
+  "rules": [],
+  "reference_sources": [
+    {
+      "path": "current/README.md",
+      "role": "current"
+    },
+    {
+      "path": "decisions/closed.md",
+      "role": "current"
+    }
+  ],
+  "streaming_references": [],
+  "quarantine_root": "/absolute/path/to/cleanup-example/quarantine",
+  "records_dir": "/absolute/path/to/cleanup-example/records",
+  "require_no_open_handles": true,
+  "budgets": {}
+}

@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan mechanical goal evaluation v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "contract",
+    "goal",
+    "goal_result",
+    "measurement_coverage",
+    "files",
+    "deltas",
+    "reasons",
+    "semantic_acceptance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "contract": {
+      "const": "goal-evaluation-v1"
+    },
+    "root": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "config_sha256": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "goal": {
+      "type": "object"
+    },
+    "goal_result": {
+      "enum": [
+        "Passed",
+        "Failed",
+        "Unknown"
+      ]
+    },
+    "measurement_coverage": {
+      "type": "object"
+    },
+    "files": {
+      "type": "array"
+    },
+    "deltas": {
+      "type": "object"
+    },
+    "before_bytes": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "after_bytes": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "reduction_bytes": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "semantic_acceptance": {
+      "const": "Unknown"
+    }
+  },
+  "additionalProperties": true,
+  "description": "A mechanical goal result never implies semantic acceptance. Body file, view, archive and recovery-material role deltas stay separate; exceptions do not waive unmet goals."
+}

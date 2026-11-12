@@ -1,0 +1,218 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan private search-config plan schema1",
+  "type": "object",
+  "required": [
+    "format",
+    "schema_version",
+    "kind",
+    "root",
+    "profile_sha256",
+    "config_sha256",
+    "root_identity",
+    "operation_id",
+    "fingerprint",
+    "status",
+    "files",
+    "search",
+    "native_validation",
+    "vscode_ui"
+  ],
+  "properties": {
+    "format": {
+      "const": "fifan-directory-plan"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "kind": {
+      "const": "search-config"
+    },
+    "root": {
+      "type": "string"
+    },
+    "profile_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "config_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "root_identity": {
+      "type": "object",
+      "required": [
+        "device",
+        "inode"
+      ],
+      "properties": {
+        "device": {
+          "type": "integer"
+        },
+        "inode": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "operation_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "status": {
+      "const": "Preview"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "before",
+          "after",
+          "changed"
+        ],
+        "properties": {
+          "path": {
+            "enum": [
+              ".ignore",
+              ".vscode/settings.json"
+            ]
+          },
+          "before": {
+            "anyOf": [
+              {
+                "type": "object",
+                "required": [
+                  "base64",
+                  "sha256",
+                  "bytes",
+                  "mode",
+                  "owner"
+                ],
+                "properties": {
+                  "base64": {
+                    "type": "string",
+                    "contentEncoding": "base64"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  },
+                  "bytes": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "mode": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 4095
+                  },
+                  "owner": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "required": [
+                          "device",
+                          "inode"
+                        ],
+                        "properties": {
+                          "device": {
+                            "type": "integer"
+                          },
+                          "inode": {
+                            "type": "integer"
+                          }
+                        },
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "after": {
+            "type": "object",
+            "required": [
+              "base64",
+              "sha256",
+              "bytes",
+              "mode",
+              "owner"
+            ],
+            "properties": {
+              "base64": {
+                "type": "string",
+                "contentEncoding": "base64"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "mode": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4095
+              },
+              "owner": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "required": [
+                      "device",
+                      "inode"
+                    ],
+                    "properties": {
+                      "device": {
+                        "type": "integer"
+                      },
+                      "inode": {
+                        "type": "integer"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "changed": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "search": {
+      "type": "object"
+    },
+    "native_validation": {
+      "const": "Not run"
+    },
+    "vscode_ui": {
+      "const": "Not run"
+    }
+  },
+  "additionalProperties": true,
+  "description": "PRIVATE unredacted 0600 recovery material. Never print this full plan or encoded config originals to stdout. Runtime validates full source ownership, exact fingerprints, allowed paths and current profile binding."
+}

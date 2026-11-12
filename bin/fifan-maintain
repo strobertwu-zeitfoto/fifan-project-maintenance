@@ -1,0 +1,21 @@
+#!/bin/sh
+set -eu
+task_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd -P)
+case "${FIFAN_MAINTAIN_RUNTIME:-auto}" in
+    auto) maintenance_envs=".venv .venv315 .venv39" ;;
+    315) maintenance_envs=".venv315" ;;
+    39) maintenance_envs=".venv39" ;;
+    312) maintenance_envs=".venv" ;;
+    *) echo 'Unknown FIFAN_MAINTAIN_RUNTIME; use auto, 315, 39 or 312.' >&2; exit 2 ;;
+esac
+for maintenance_env in $maintenance_envs; do
+    if [ -e "$task_root/$maintenance_env" ] || [ -L "$task_root/$maintenance_env" ]; then
+        if [ ! -x "$task_root/$maintenance_env/bin/python" ]; then
+            echo 'Selected project environment unavailable. See docs/USAGE.md.' >&2
+            exit 2
+        fi
+        exec "$task_root/$maintenance_env/bin/python" -B -m fifan_maintenance.cli "$@"
+    fi
+done
+echo 'Project environment missing. See docs/USAGE.md for installation.' >&2
+exit 2

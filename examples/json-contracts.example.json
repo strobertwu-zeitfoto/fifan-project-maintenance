@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "json_contracts": [
+    {
+      "path": "registry.json",
+      "records": "/items",
+      "required": [
+        "/id",
+        "/file"
+      ],
+      "paths": [
+        "/file"
+      ]
+    }
+  ]
+}

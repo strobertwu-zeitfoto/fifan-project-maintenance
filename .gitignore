@@ -1,0 +1,15 @@
+.venv/
+.venv39/
+.venv315/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+evidence/
+.fifan-maintenance/
+.codex-knowledge*.json
+.env
+.env.*
+.DS_Store

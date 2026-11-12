@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan independent directory plan envelope schema1",
+  "oneOf": [
+    {
+      "$ref": "directory-search-plan.schema.json"
+    },
+    {
+      "$ref": "directory-archive-plan.schema.json"
+    }
+  ],
+  "description": "Private artifact dispatcher only. These formats are not old v2 file-change records and do not grant runtime root permission."
+}

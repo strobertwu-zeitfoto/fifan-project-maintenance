@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan explicit cleanup request schema1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "approval": {
+      "type": "object",
+      "properties": {
+        "reference": {
+          "$ref": "cleanup-profile.schema.json#/$defs/text"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "quarantine",
+              "purge"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "reference",
+        "actions"
+      ],
+      "additionalProperties": false
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "$ref": "cleanup-profile.schema.json#/$defs/relative"
+          },
+          "kind": {
+            "enum": [
+              "old_build",
+              "completed_log",
+              "disposable_output"
+            ]
+          },
+          "reason": {
+            "$ref": "cleanup-profile.schema.json#/$defs/text"
+          },
+          "closure": {
+            "type": "object",
+            "properties": {
+              "decision": {
+                "const": "closed"
+              },
+              "reason": {
+                "$ref": "cleanup-profile.schema.json#/$defs/text"
+              },
+              "evidence": {
+                "type": "array",
+                "items": {
+                  "$ref": "cleanup-profile.schema.json#/$defs/evidence"
+                },
+                "minItems": 1,
+                "maxItems": 100
+              }
+            },
+            "required": [
+              "decision",
+              "reason",
+              "evidence"
+            ],
+            "additionalProperties": false
+          },
+          "loss": {
+            "type": "object",
+            "properties": {
+              "accepted": {
+                "type": "boolean"
+              },
+              "rebuildable": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "const": "Unknown"
+                  }
+                ]
+              },
+              "unique_evidence": {
+                "type": "boolean"
+              },
+              "description": {
+                "$ref": "cleanup-profile.schema.json#/$defs/text"
+              }
+            },
+            "required": [
+              "accepted",
+              "rebuildable",
+              "unique_evidence",
+              "description"
+            ],
+            "additionalProperties": false
+          },
+          "retained": {
+            "type": "array",
+            "items": {
+              "$ref": "cleanup-profile.schema.json#/$defs/relative"
+            },
+            "uniqueItems": true
+          },
+          "build": {
+            "$ref": "cleanup-profile.schema.json#/$defs/build"
+          },
+          "disposition": {
+            "enum": [
+              "quarantine",
+              "purge"
+            ],
+            "default": "quarantine"
+          },
+          "dynamic_reference_resolutions": {
+            "type": "array",
+            "items": {
+              "$ref": "cleanup-profile.schema.json#/$defs/dynamic_resolution"
+            },
+            "maxItems": 100000
+          }
+        },
+        "required": [
+          "source",
+          "kind",
+          "reason",
+          "closure",
+          "loss",
+          "retained"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "old_build"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "build"
+              ]
+            }
+          }
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 100
+    }
+  },
+  "required": [
+    "schema_version",
+    "approval",
+    "items"
+  ],
+  "additionalProperties": false,
+  "description": "Approval is a traceable declaration, not an unforgeable permission credential. Runtime must bind exact profile candidates/retained paths/evidence. loss.accepted=false may quarantine; purge requires separate loss acceptance and explicit matching plan approval."
+}

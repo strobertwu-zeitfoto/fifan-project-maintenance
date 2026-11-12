@@ -1,0 +1,303 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan cleanup journal schema1",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "fifan-cleanup-journal"
+    },
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "kind": {
+      "const": "cleanup"
+    },
+    "root": {
+      "$ref": "cleanup-profile.schema.json#/$defs/text"
+    },
+    "profile_sha256": {
+      "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+    },
+    "config_sha256": {
+      "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+    },
+    "operation_id": {
+      "$ref": "cleanup-profile.schema.json#/$defs/uuid"
+    },
+    "journal_path": {
+      "$ref": "cleanup-profile.schema.json#/$defs/text"
+    },
+    "quarantine_plan": {
+      "$ref": "cleanup-plan.schema.json#/$defs/quarantine"
+    },
+    "record_directory": {
+      "type": "object",
+      "properties": {
+        "device": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inode": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mode": {
+          "const": 448
+        }
+      },
+      "required": [
+        "device",
+        "inode",
+        "mode"
+      ],
+      "additionalProperties": false
+    },
+    "record_owner": {
+      "$ref": "cleanup-profile.schema.json#/$defs/identity"
+    },
+    "quarantine_container": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "device": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inode": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "mode": {
+              "const": 448
+            }
+          },
+          "required": [
+            "device",
+            "inode",
+            "mode"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "state": {
+      "enum": [
+        "Prepared",
+        "Quarantining",
+        "Quarantined",
+        "Restoring",
+        "Restored",
+        "Purging",
+        "PartiallyPurged",
+        "Purged",
+        "NeedsAttention"
+      ]
+    },
+    "direction": {
+      "enum": [
+        "quarantine",
+        "restore",
+        "purge"
+      ]
+    },
+    "intent": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "action": {
+              "enum": [
+                "prepare_container",
+                "quarantine",
+                "restore",
+                "unlink",
+                "rmdir"
+              ]
+            },
+            "item_index": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "entry_index": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "expected": {
+              "anyOf": [
+                {
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "action",
+            "item_index",
+            "entry_index",
+            "expected"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "source": {
+            "$ref": "cleanup-profile.schema.json#/$defs/relative"
+          },
+          "location": {
+            "enum": [
+              "source",
+              "quarantine",
+              "purged"
+            ]
+          },
+          "state": {
+            "enum": [
+              "Prepared",
+              "Quarantining",
+              "Quarantined",
+              "Restoring",
+              "Restored",
+              "Purging",
+              "PartiallyPurged",
+              "Purged",
+              "NeedsAttention"
+            ]
+          },
+          "observations": {
+            "type": "object",
+            "patternProperties": {
+              "^(0|[1-9][0-9]*)$": {
+                "type": "object",
+                "properties": {
+                  "mtime_ns": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "ctime_ns": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                },
+                "required": [],
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          },
+          "removed": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "uniqueItems": true
+          },
+          "removal_evidence": {
+            "type": "object",
+            "additionalProperties": {
+              "enum": [
+                "observed_missing_after_intent",
+                "syscall_returned_and_missing"
+              ]
+            }
+          }
+        },
+        "required": [
+          "index",
+          "source",
+          "location",
+          "state",
+          "observations",
+          "removed",
+          "removal_evidence"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "restore_plan": {
+      "anyOf": [
+        {
+          "$ref": "cleanup-plan.schema.json#/$defs/restore"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "purge_plan": {
+      "anyOf": [
+        {
+          "$ref": "cleanup-plan.schema.json#/$defs/purge"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "last_error": {
+      "type": [
+        "object",
+        "string",
+        "null"
+      ]
+    },
+    "cancelled_purge": {
+      "anyOf": [
+        {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "fingerprint": {
+      "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+    }
+  },
+  "required": [
+    "format",
+    "schema_version",
+    "kind",
+    "root",
+    "profile_sha256",
+    "config_sha256",
+    "operation_id",
+    "journal_path",
+    "quarantine_plan",
+    "record_directory",
+    "record_owner",
+    "quarantine_container",
+    "state",
+    "direction",
+    "intent",
+    "items",
+    "restore_plan",
+    "purge_plan",
+    "last_error",
+    "fingerprint"
+  ],
+  "additionalProperties": false,
+  "description": "cancelled_purge is optional for earlier 1.4 candidates, nullable old purge fingerprint for audited cancellation before any loss. Partial purge never becomes complete restore."
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan directory restore plan dispatcher schema1",
+  "oneOf": [
+    {
+      "$ref": "directory-search-restore-plan.schema.json"
+    },
+    {
+      "$ref": "directory-archive-restore-plan.schema.json"
+    }
+  ],
+  "description": "Independent private restore artifact; runtime project/profile/root/journal fingerprints and no-clobber ownership checks remain mandatory."
+}

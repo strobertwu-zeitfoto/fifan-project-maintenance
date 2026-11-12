@@ -1,0 +1,81 @@
+{
+  "schema_version": 2,
+  "sources": [
+    "current.md"
+  ],
+  "reference_bodies": [
+    "archive/*.md"
+  ],
+  "historical_roots": [
+    "archive"
+  ],
+  "checks": [
+    "documents",
+    "links"
+  ],
+  "views": [
+    {
+      "name": "current",
+      "path": "current.md",
+      "start_line": 1,
+      "end_line": 4,
+      "kind": "current"
+    },
+    {
+      "name": "historical",
+      "path": "current.md",
+      "start_line": 6,
+      "end_line": 9,
+      "kind": "historical"
+    }
+  ],
+  "budgets": {
+    "max_files": 2000,
+    "max_file_bytes": 4194304,
+    "max_total_bytes": 67108864,
+    "max_seconds": 60,
+    "max_findings": 200
+  },
+  "goal": {
+    "kind": "body-slim",
+    "each_file": true,
+    "minimum_reduction_bytes": 1,
+    "exceptions": []
+  },
+  "history_budget": {
+    "max_files": 100,
+    "max_seconds": 10,
+    "max_depth": 1,
+    "per_root_max_files": {
+      "archive": 100
+    },
+    "max_output_entries": 20
+  },
+  "measurement": {
+    "version": 1,
+    "active": [
+      "current.md"
+    ],
+    "views": [
+      {
+        "name": "current",
+        "path": "current.md",
+        "start_line": 1,
+        "end_line": 4,
+        "kind": "current"
+      }
+    ],
+    "reused_archives": [],
+    "new_archives": [
+      "archive/current.before.md"
+    ],
+    "external_roots": [],
+    "external_records": [],
+    "allow_absent": [
+      {
+        "role": "new_archives",
+        "path": "archive/current.before.md"
+      }
+    ]
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan private directory archive journal schema1",
+  "type": "object",
+  "required": [
+    "format",
+    "schema_version",
+    "kind",
+    "operation_id",
+    "journal_path",
+    "plan",
+    "state",
+    "progress",
+    "restore_plan",
+    "last_error",
+    "fingerprint"
+  ],
+  "properties": {
+    "format": {
+      "const": "fifan-directory-journal"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "kind": {
+      "const": "directory-archive"
+    },
+    "operation_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "journal_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "plan": {
+      "$ref": "directory-archive-plan.schema.json"
+    },
+    "state": {
+      "type": "string"
+    },
+    "progress": {
+      "type": "array"
+    },
+    "restore_plan": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "last_error": {
+      "type": [
+        "object",
+        "string",
+        "null"
+      ]
+    },
+    "fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "additionalProperties": true,
+  "description": "PRIVATE and independent from old v2 file journals/session. Progress and locator ownership are observed against real source/archive/records trees; incomplete consistent states are Unknown, not Archived."
+}

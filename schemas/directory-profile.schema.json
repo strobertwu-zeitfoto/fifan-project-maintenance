@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan directory profile schema1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_root"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "project_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "preset": {
+      "enum": [
+        "generic",
+        "unity"
+      ],
+      "default": "generic"
+    },
+    "scan_roots": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "default": [
+        "."
+      ]
+    },
+    "critical_paths": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "default": []
+    },
+    "reference_sources": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "role"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "enum": [
+              "current",
+              "historical"
+            ]
+          }
+        }
+      },
+      "description": "Explicit body-reading scope and role; current sources themselves are retained even without incoming/self links. Current constraint matching never grants historical eligibility."
+    },
+    "classifications": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "role",
+          "reason"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "enum": [
+              "keep",
+              "active",
+              "historical",
+              "rebuildable",
+              "unknown"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "search": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "exclude": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "default": []
+        },
+        "vscode": {
+          "type": "boolean",
+          "default": false
+        },
+        "watcher_exclude": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "archive": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "archive_root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "records_dir": {
+          "type": "string",
+          "minLength": 1
+        },
+        "candidates": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "default": []
+        },
+        "require_no_open_handles": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "budgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_entries": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000,
+          "default": 200000
+        },
+        "max_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 300,
+          "default": 60
+        },
+        "max_depth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 128,
+          "default": 16
+        },
+        "max_output_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30720,
+          "default": 8192
+        },
+        "max_hash_entries": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000,
+          "default": 20000
+        },
+        "max_hash_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 68719476736,
+          "default": 2147483648
+        },
+        "max_hash_file_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4294967296,
+          "default": 536870912
+        },
+        "max_artifact_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 134217728,
+          "default": 33554432
+        },
+        "max_reference_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 268435456,
+          "default": 67108864
+        },
+        "max_reference_file_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16777216,
+          "default": 4194304
+        },
+        "max_reference_files": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000,
+          "default": 20000
+        }
+      }
+    },
+    "streaming_references": {
+      "type": "array",
+      "maxItems": 100000,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "\\.([lL][oO][gG]|[tT][xX][tT])$"
+      },
+      "description": "Explicit authorized plain-text files scanned in 64KiB blocks with <=1MiB physical lines; complete file still charged to max_reference_bytes. Ordinary per-file limits remain unchanged."
+    }
+  },
+  "description": "Independent directory data contract, not a task-profile or v2 plan. Runtime validates canonical exact paths, duplicate roles, project binding and no-symlink roots. Archive/records declarations never grant external writes; explicit matching runtime grants are required.",
+  "$comment": "Runtime profile input limit is 262144 bytes including raw whitespace; dict input canonical bytes are also bounded. max_artifact_bytes never increases this independent input limit."
+}

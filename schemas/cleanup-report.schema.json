@@ -1,0 +1,2635 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan cleanup reports schema1",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/inspect"
+    },
+    {
+      "$ref": "#/$defs/qualification"
+    },
+    {
+      "$ref": "#/$defs/rebaseline"
+    },
+    {
+      "$ref": "#/$defs/verification"
+    },
+    {
+      "$ref": "#/$defs/measurement"
+    },
+    {
+      "$ref": "#/$defs/evaluation"
+    },
+    {
+      "$ref": "#/$defs/history"
+    },
+    {
+      "$ref": "#/$defs/after-metrics"
+    }
+  ],
+  "$defs": {
+    "inspect": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "fifan-cleanup-report"
+        },
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "kind": {
+          "const": "inspect"
+        },
+        "root": {
+          "$ref": "cleanup-profile.schema.json#/$defs/text"
+        },
+        "profile_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "status": {
+          "enum": [
+            "Passed",
+            "Unknown",
+            "Blocked",
+            "Failed"
+          ]
+        },
+        "fingerprint": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "model_calls": {
+          "const": 0
+        },
+        "model_usage": {
+          "const": "Unknown"
+        },
+        "semantic_acceptance": {
+          "const": "Not run"
+        },
+        "counts": {
+          "type": "object",
+          "properties": {
+            "R": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "D": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "U": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "R",
+            "D",
+            "U"
+          ],
+          "additionalProperties": false
+        },
+        "scan_roots_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "scan_root_hints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scope": {
+          "type": "string"
+        },
+        "observed_logical_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "body_bytes_read": {
+          "const": 0
+        },
+        "candidate_hash_bytes": {
+          "const": 0
+        },
+        "work_entries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "coverage": {
+          "type": "object"
+        },
+        "samples": {
+          "type": "array"
+        },
+        "samples_are_display_only": {
+          "const": true
+        },
+        "samples_limited_to": {
+          "const": 10
+        },
+        "candidate_is_execution_approval": {
+          "const": false
+        },
+        "rules_are_hints_only": {
+          "const": true
+        },
+        "rule_hints": {
+          "type": "object",
+          "properties": {
+            "groups": {
+              "type": "array",
+              "maxItems": 8,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "rule_index": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "kind": {
+                    "enum": [
+                      "old_build",
+                      "completed_log",
+                      "disposable_output"
+                    ]
+                  },
+                  "glob": {
+                    "type": "string"
+                  },
+                  "reason": {
+                    "type": "string"
+                  },
+                  "matched_count": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "samples": {
+                    "type": "array",
+                    "maxItems": 8,
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "path": {
+                          "type": "string"
+                        },
+                        "classification": {
+                          "enum": [
+                            "R",
+                            "D",
+                            "U"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "path",
+                        "classification"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "samples_truncated": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "rule_index",
+                  "kind",
+                  "glob",
+                  "reason",
+                  "matched_count",
+                  "samples",
+                  "samples_truncated"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "matching_rules_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "matched_paths_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "groups_truncated": {
+              "type": "boolean"
+            },
+            "complete": {
+              "type": "boolean"
+            },
+            "counts_are_lower_bounds": {
+              "type": "boolean"
+            },
+            "groups_limited_to": {
+              "const": 8
+            },
+            "samples_limited_to": {
+              "const": 8
+            }
+          },
+          "required": [
+            "groups",
+            "matching_rules_count",
+            "matched_paths_count",
+            "groups_truncated",
+            "complete",
+            "counts_are_lower_bounds",
+            "groups_limited_to",
+            "samples_limited_to"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "format",
+        "schema_version",
+        "kind",
+        "root",
+        "profile_sha256",
+        "status",
+        "fingerprint",
+        "model_calls",
+        "model_usage",
+        "semantic_acceptance",
+        "counts",
+        "scan_roots_count",
+        "scan_root_hints",
+        "scope",
+        "observed_logical_bytes",
+        "body_bytes_read",
+        "candidate_hash_bytes",
+        "work_entries",
+        "coverage",
+        "samples",
+        "samples_are_display_only",
+        "samples_limited_to",
+        "candidate_is_execution_approval",
+        "rules_are_hints_only"
+      ],
+      "additionalProperties": false
+    },
+    "qualification": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "fifan-cleanup-report"
+        },
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "kind": {
+          "const": "qualification"
+        },
+        "root": {
+          "$ref": "cleanup-profile.schema.json#/$defs/text"
+        },
+        "profile_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "status": {
+          "enum": [
+            "Passed",
+            "Unknown",
+            "Blocked",
+            "Failed"
+          ]
+        },
+        "fingerprint": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "model_calls": {
+          "const": 0
+        },
+        "model_usage": {
+          "const": "Unknown"
+        },
+        "semantic_acceptance": {
+          "const": "Not run"
+        },
+        "request_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "approval_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "retained": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/retained_snapshot"
+                }
+              }
+            },
+            "required": [
+              "retained"
+            ],
+            "additionalProperties": true
+          }
+        },
+        "material": {
+          "type": "object",
+          "properties": {
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "retained": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/retained_snapshot"
+                    }
+                  }
+                },
+                "required": [
+                  "retained"
+                ],
+                "additionalProperties": true
+              }
+            }
+          },
+          "required": [
+            "items"
+          ],
+          "additionalProperties": true
+        },
+        "material_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "coverage": {
+          "type": "object"
+        },
+        "reference_bytes_read": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "retained_hash_usage": {
+          "type": "object"
+        },
+        "candidate_hash_bytes": {
+          "const": 0
+        },
+        "global_no_dependencies": {
+          "const": "Unknown"
+        }
+      },
+      "required": [
+        "format",
+        "schema_version",
+        "kind",
+        "root",
+        "profile_sha256",
+        "status",
+        "fingerprint",
+        "model_calls",
+        "model_usage",
+        "semantic_acceptance",
+        "request_sha256",
+        "approval_sha256",
+        "items",
+        "material",
+        "material_sha256",
+        "coverage",
+        "reference_bytes_read",
+        "retained_hash_usage",
+        "candidate_hash_bytes",
+        "global_no_dependencies"
+      ],
+      "additionalProperties": false
+    },
+    "rebaseline": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "fifan-cleanup-report"
+        },
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "kind": {
+          "const": "rebaseline"
+        },
+        "root": {
+          "$ref": "cleanup-profile.schema.json#/$defs/text"
+        },
+        "profile_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "status": {
+          "enum": [
+            "Passed",
+            "Unknown",
+            "Blocked",
+            "Failed"
+          ]
+        },
+        "fingerprint": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "model_calls": {
+          "const": 0
+        },
+        "model_usage": {
+          "const": "Unknown"
+        },
+        "material": {
+          "type": "object",
+          "properties": {
+            "retained": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/retained_snapshot"
+              }
+            }
+          },
+          "required": [
+            "retained"
+          ],
+          "additionalProperties": true
+        },
+        "material_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "coverage": {
+          "type": "object"
+        },
+        "unknowns": {
+          "type": "array"
+        },
+        "reference_bytes_read": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "retained_hash_usage": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "format",
+        "schema_version",
+        "kind",
+        "root",
+        "profile_sha256",
+        "status",
+        "fingerprint",
+        "model_calls",
+        "model_usage",
+        "material",
+        "material_sha256",
+        "coverage",
+        "unknowns",
+        "reference_bytes_read",
+        "retained_hash_usage"
+      ],
+      "additionalProperties": false
+    },
+    "verification": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "fifan-cleanup-report"
+        },
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "kind": {
+          "const": "verification"
+        },
+        "root": {
+          "$ref": "cleanup-profile.schema.json#/$defs/text"
+        },
+        "profile_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "status": {
+          "enum": [
+            "Passed",
+            "Unknown",
+            "Blocked",
+            "Failed"
+          ]
+        },
+        "fingerprint": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "operation_id": {
+          "$ref": "cleanup-profile.schema.json#/$defs/uuid"
+        },
+        "journal_path": {
+          "$ref": "cleanup-profile.schema.json#/$defs/text"
+        },
+        "state": {
+          "enum": [
+            "Prepared",
+            "Quarantining",
+            "Quarantined",
+            "Restoring",
+            "Restored",
+            "Purging",
+            "PartiallyPurged",
+            "Purged",
+            "NeedsAttention"
+          ]
+        },
+        "irreversible": {
+          "type": "boolean"
+        },
+        "physical_release_attribution": {
+          "const": "Unknown"
+        },
+        "model_calls": {
+          "const": 0
+        },
+        "items": {
+          "type": "array"
+        },
+        "issues": {
+          "type": "array"
+        },
+        "journal_consistency": {
+          "enum": [
+            "Passed",
+            "Failed"
+          ]
+        },
+        "restore_possible": {
+          "type": "boolean"
+        },
+        "hash_usage": {
+          "type": "object"
+        },
+        "reason_code": {
+          "type": "string"
+        },
+        "remaining": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "required": [
+        "format",
+        "schema_version",
+        "kind",
+        "root",
+        "profile_sha256",
+        "status",
+        "fingerprint",
+        "operation_id",
+        "journal_path",
+        "state",
+        "irreversible",
+        "physical_release_attribution",
+        "model_calls",
+        "restore_possible"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "Blocked"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "reason_code",
+              "remaining"
+            ]
+          },
+          "else": {
+            "required": [
+              "items",
+              "issues",
+              "journal_consistency",
+              "hash_usage"
+            ]
+          }
+        }
+      ]
+    },
+    "measurement": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "fifan-cleanup-report"
+        },
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "kind": {
+          "const": "measurement"
+        },
+        "root": {
+          "$ref": "cleanup-profile.schema.json#/$defs/text"
+        },
+        "profile_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "status": {
+          "enum": [
+            "Passed",
+            "Unknown",
+            "Blocked",
+            "Failed"
+          ]
+        },
+        "fingerprint": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "semantic_acceptance": {
+          "const": "Not run"
+        },
+        "config_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "request_sha256": {
+          "anyOf": [
+            {
+              "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "operation_id": {
+          "anyOf": [
+            {
+              "$ref": "cleanup-profile.schema.json#/$defs/uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cohort": {
+          "type": "object"
+        },
+        "cohort_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "stage": {
+          "enum": [
+            "T0",
+            "T1",
+            "T2",
+            "T3",
+            null
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "domains": {
+          "type": "object",
+          "properties": {
+            "project_payload": {
+              "type": "object",
+              "properties": {
+                "root": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "items": {
+                  "type": "array"
+                },
+                "status": {
+                  "enum": [
+                    "Passed",
+                    "Unknown",
+                    "Not run"
+                  ]
+                },
+                "bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "observed_bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "files": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "directories": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "coverage": {
+                  "type": "object",
+                  "properties": {
+                    "complete": {
+                      "type": "boolean"
+                    },
+                    "count_is_lower_bound": {
+                      "type": "boolean"
+                    },
+                    "reason_code": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "complete",
+                    "count_is_lower_bound"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "root",
+                "items",
+                "status",
+                "bytes",
+                "observed_bytes",
+                "files",
+                "directories",
+                "coverage"
+              ],
+              "additionalProperties": false
+            },
+            "quarantine_payload": {
+              "type": "object",
+              "properties": {
+                "root": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "items": {
+                  "type": "array"
+                },
+                "status": {
+                  "enum": [
+                    "Passed",
+                    "Unknown",
+                    "Not run"
+                  ]
+                },
+                "bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "observed_bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "files": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "directories": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "coverage": {
+                  "type": "object",
+                  "properties": {
+                    "complete": {
+                      "type": "boolean"
+                    },
+                    "count_is_lower_bound": {
+                      "type": "boolean"
+                    },
+                    "reason_code": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "complete",
+                    "count_is_lower_bound"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "root",
+                "items",
+                "status",
+                "bytes",
+                "observed_bytes",
+                "files",
+                "directories",
+                "coverage"
+              ],
+              "additionalProperties": false
+            },
+            "records": {
+              "type": "object",
+              "properties": {
+                "root": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "items": {
+                  "type": "array"
+                },
+                "status": {
+                  "enum": [
+                    "Passed",
+                    "Unknown",
+                    "Not run"
+                  ]
+                },
+                "bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "observed_bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "files": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "directories": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "coverage": {
+                  "type": "object",
+                  "properties": {
+                    "complete": {
+                      "type": "boolean"
+                    },
+                    "count_is_lower_bound": {
+                      "type": "boolean"
+                    },
+                    "reason_code": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "complete",
+                    "count_is_lower_bound"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "root",
+                "items",
+                "status",
+                "bytes",
+                "observed_bytes",
+                "files",
+                "directories",
+                "coverage"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "project_payload",
+            "quarantine_payload",
+            "records"
+          ],
+          "additionalProperties": false
+        },
+        "total_logical_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "observed_total_logical_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "total_is_lower_bound": {
+          "type": "boolean"
+        },
+        "cleanup_state": {
+          "anyOf": [
+            {
+              "enum": [
+                "Prepared",
+                "Quarantining",
+                "Quarantined",
+                "Restoring",
+                "Restored",
+                "Purging",
+                "PartiallyPurged",
+                "Purged",
+                "NeedsAttention"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "journal_fingerprint": {
+          "anyOf": [
+            {
+              "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "plan_fingerprint": {
+          "anyOf": [
+            {
+              "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "payload_body_bytes_read": {
+          "const": 0
+        },
+        "record_metadata_io": {
+          "type": "string"
+        },
+        "work_entries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "metadata_lookups": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "elapsed_seconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "started_at": {
+          "type": "string"
+        },
+        "observed_at": {
+          "type": "string"
+        },
+        "post_observation_artifacts_measured": {
+          "const": false
+        },
+        "storage_release": {
+          "const": "Unknown"
+        },
+        "content_conservation": {
+          "const": "Unknown"
+        },
+        "exclusive_attribution": {
+          "const": "Unknown"
+        },
+        "physical_release_bytes": {
+          "type": "null"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "coverage": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "format",
+        "schema_version",
+        "kind",
+        "root",
+        "profile_sha256",
+        "status",
+        "fingerprint",
+        "semantic_acceptance",
+        "config_sha256",
+        "request_sha256",
+        "operation_id",
+        "cohort",
+        "cohort_sha256",
+        "stage",
+        "domains",
+        "total_logical_bytes",
+        "observed_total_logical_bytes",
+        "total_is_lower_bound",
+        "cleanup_state",
+        "journal_fingerprint",
+        "plan_fingerprint",
+        "payload_body_bytes_read",
+        "observed_at",
+        "post_observation_artifacts_measured",
+        "storage_release",
+        "content_conservation",
+        "exclusive_attribution",
+        "physical_release_bytes",
+        "warnings"
+      ],
+      "additionalProperties": false
+    },
+    "evaluation": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "fifan-cleanup-report"
+        },
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "kind": {
+          "const": "evaluation"
+        },
+        "root": {
+          "$ref": "cleanup-profile.schema.json#/$defs/text"
+        },
+        "profile_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "status": {
+          "enum": [
+            "Passed",
+            "Unknown",
+            "Blocked",
+            "Failed"
+          ]
+        },
+        "fingerprint": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "semantic_acceptance": {
+          "const": "Not run"
+        },
+        "stage": {
+          "enum": [
+            "T1",
+            "T2",
+            "T3"
+          ]
+        },
+        "coverage": {
+          "type": "object"
+        },
+        "binding_mismatches": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "config_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "request_sha256": {
+          "anyOf": [
+            {
+              "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "operation_id": {
+          "anyOf": [
+            {
+              "$ref": "cleanup-profile.schema.json#/$defs/uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cohort_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "before_fingerprint": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "after_fingerprint": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "domains": {
+          "type": "object",
+          "properties": {
+            "project_payload": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "enum": [
+                    "Passed",
+                    "Unknown"
+                  ]
+                },
+                "before_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "after_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "delta_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "status",
+                "before_bytes",
+                "after_bytes",
+                "delta_bytes"
+              ],
+              "additionalProperties": false
+            },
+            "quarantine_payload": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "enum": [
+                    "Passed",
+                    "Unknown"
+                  ]
+                },
+                "before_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "after_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "delta_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "status",
+                "before_bytes",
+                "after_bytes",
+                "delta_bytes"
+              ],
+              "additionalProperties": false
+            },
+            "records": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "enum": [
+                    "Passed",
+                    "Unknown"
+                  ]
+                },
+                "before_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "after_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "delta_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "status",
+                "before_bytes",
+                "after_bytes",
+                "delta_bytes"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "project_payload",
+            "quarantine_payload",
+            "records"
+          ],
+          "additionalProperties": false
+        },
+        "logical_payload_reduction_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "logical_purged_payload_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "total_delta_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "physical_release_bytes": {
+          "type": "null"
+        },
+        "storage_release": {
+          "const": "Unknown"
+        },
+        "exclusive_attribution": {
+          "const": "Unknown"
+        },
+        "post_observation_artifacts_measured": {
+          "const": false
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "format",
+        "schema_version",
+        "kind",
+        "root",
+        "profile_sha256",
+        "status",
+        "fingerprint",
+        "semantic_acceptance",
+        "stage",
+        "coverage",
+        "binding_mismatches",
+        "config_sha256",
+        "request_sha256",
+        "operation_id",
+        "cohort_sha256",
+        "before_fingerprint",
+        "after_fingerprint",
+        "domains",
+        "logical_payload_reduction_bytes",
+        "logical_purged_payload_bytes",
+        "total_delta_bytes",
+        "physical_release_bytes",
+        "storage_release",
+        "exclusive_attribution",
+        "post_observation_artifacts_measured",
+        "warnings"
+      ],
+      "additionalProperties": false
+    },
+    "history": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "fifan-cleanup-report"
+        },
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "kind": {
+          "const": "history"
+        },
+        "root": {
+          "$ref": "cleanup-profile.schema.json#/$defs/text"
+        },
+        "profile_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "status": {
+          "enum": [
+            "Passed",
+            "Unknown",
+            "Blocked",
+            "Failed"
+          ]
+        },
+        "fingerprint": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "config_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "records_root": {
+          "$ref": "cleanup-profile.schema.json#/$defs/root_identity"
+        },
+        "coverage": {
+          "type": "object"
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "operation_id": {
+                "$ref": "cleanup-profile.schema.json#/$defs/uuid"
+              },
+              "journal_fingerprint": {
+                "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+              },
+              "request_sha256": {
+                "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+              },
+              "state": {
+                "type": "string"
+              },
+              "terminal_consistent": {
+                "type": "boolean"
+              },
+              "status": {
+                "enum": [
+                  "Passed",
+                  "Unknown"
+                ]
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "source": {
+                      "type": "string"
+                    },
+                    "quarantine_relative": {
+                      "type": "string"
+                    },
+                    "manifest_file_bytes": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "declared_location": {
+                      "enum": [
+                        "source",
+                        "quarantine",
+                        "purged"
+                      ]
+                    },
+                    "declared_state": {
+                      "type": "string"
+                    },
+                    "declared_source_exists": {
+                      "type": [
+                        "boolean",
+                        "null"
+                      ]
+                    },
+                    "source_exists": {
+                      "type": "null"
+                    },
+                    "quarantine_exists": {
+                      "type": "null"
+                    },
+                    "live_verification": {
+                      "const": "Not run"
+                    }
+                  },
+                  "required": [
+                    "source",
+                    "quarantine_relative",
+                    "manifest_file_bytes",
+                    "declared_location",
+                    "declared_state",
+                    "declared_source_exists",
+                    "source_exists",
+                    "quarantine_exists",
+                    "live_verification"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "ownership_verification": {
+                "const": "Passed"
+              },
+              "live_verification": {
+                "const": "Not run"
+              }
+            },
+            "required": [
+              "operation_id",
+              "journal_fingerprint",
+              "request_sha256",
+              "state",
+              "terminal_consistent",
+              "status",
+              "items",
+              "ownership_verification",
+              "live_verification"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "record_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "record_metadata_bytes_read": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "payload_body_bytes_read": {
+          "const": 0
+        },
+        "live_verification": {
+          "const": "Not run"
+        },
+        "projection": {
+          "const": "declarations only"
+        },
+        "observed_at": {
+          "type": "string"
+        },
+        "post_observation_artifacts_measured": {
+          "const": false
+        }
+      },
+      "required": [
+        "format",
+        "schema_version",
+        "kind",
+        "root",
+        "profile_sha256",
+        "status",
+        "fingerprint",
+        "config_sha256",
+        "records_root",
+        "coverage",
+        "records",
+        "record_count",
+        "record_metadata_bytes_read",
+        "payload_body_bytes_read",
+        "live_verification",
+        "projection",
+        "observed_at",
+        "post_observation_artifacts_measured"
+      ],
+      "additionalProperties": false
+    },
+    "retained_snapshot": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "state_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "manifest": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "kind": {
+                    "const": "file"
+                  },
+                  "device": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "inode": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "mode": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 4095
+                  },
+                  "mtime_ns": {
+                    "type": "integer"
+                  },
+                  "ctime_ns": {
+                    "type": "integer"
+                  },
+                  "nlink": {
+                    "const": 1
+                  },
+                  "bytes": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "sha256": {
+                    "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+                  }
+                },
+                "required": [
+                  "path",
+                  "kind",
+                  "device",
+                  "inode",
+                  "mode",
+                  "mtime_ns",
+                  "ctime_ns",
+                  "nlink",
+                  "bytes",
+                  "sha256"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "kind": {
+                    "const": "directory"
+                  },
+                  "device": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "inode": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "mode": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 4095
+                  },
+                  "mtime_ns": {
+                    "type": "integer"
+                  },
+                  "ctime_ns": {
+                    "type": "integer"
+                  },
+                  "nlink": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "path",
+                  "kind",
+                  "device",
+                  "inode",
+                  "mode",
+                  "mtime_ns",
+                  "ctime_ns",
+                  "nlink"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "minItems": 1
+        },
+        "build": {
+          "anyOf": [
+            {
+              "$ref": "cleanup-profile.schema.json#/$defs/build"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "entries": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "identity": {
+          "type": "object",
+          "properties": {
+            "device": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inode": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "mode": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4095
+            }
+          },
+          "required": [
+            "device",
+            "inode",
+            "mode"
+          ],
+          "additionalProperties": false
+        },
+        "runtime_validation": {
+          "const": "Not run"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "cleanup-profile.schema.json#/$defs/evidence"
+          },
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "state_sha256",
+        "manifest",
+        "build",
+        "entries",
+        "identity",
+        "runtime_validation"
+      ],
+      "additionalProperties": false,
+      "description": "Final 1.4 retained-state contract. sha256 keeps content/permission meaning; state_sha256 binds the complete canonical manifest. Runtime checks digest, entries count and actual retained identity/state; schema alone does not prove those equalities. Directory entries have no payload bytes."
+    },
+    "after_metrics": {
+      "type": "object",
+      "properties": {
+        "body": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "const": "Not run"
+                }
+              },
+              "required": [
+                "status"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "enum": [
+                    "Passed",
+                    "Not run"
+                  ]
+                },
+                "basis": {
+                  "const": "verified journal content; not an additional live measurement or semantic acceptance"
+                },
+                "files": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "const": "replace"
+                      },
+                      "before_bytes": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "after_bytes": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "reduction_bytes": {
+                        "type": "integer"
+                      },
+                      "before_sha256": {
+                        "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+                      },
+                      "after_sha256": {
+                        "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+                      }
+                    },
+                    "required": [
+                      "path",
+                      "kind",
+                      "before_bytes",
+                      "after_bytes",
+                      "reduction_bytes",
+                      "before_sha256",
+                      "after_sha256"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "file_count": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "other_operations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "enum": [
+                          "move",
+                          "snapshot"
+                        ]
+                      },
+                      "before_bytes": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "before_sha256": {
+                        "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+                      },
+                      "after_sha256": {
+                        "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+                      },
+                      "destination": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "path",
+                      "kind",
+                      "before_bytes",
+                      "before_sha256",
+                      "after_sha256",
+                      "destination"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "before_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "after_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "reduction_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "status",
+                "basis",
+                "files",
+                "file_count",
+                "other_operations",
+                "before_bytes",
+                "after_bytes",
+                "reduction_bytes"
+              ],
+              "additionalProperties": false,
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "status": {
+                        "const": "Not run"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "before_bytes": {
+                        "type": "null"
+                      },
+                      "after_bytes": {
+                        "type": "null"
+                      },
+                      "reduction_bytes": {
+                        "type": "null"
+                      },
+                      "file_count": {
+                        "const": 0
+                      },
+                      "files": {
+                        "maxItems": 0
+                      }
+                    }
+                  },
+                  "else": {
+                    "properties": {
+                      "file_count": {
+                        "minimum": 1
+                      },
+                      "files": {
+                        "minItems": 1
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "search": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "const": "Not run"
+                }
+              },
+              "required": [
+                "status"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "enum": [
+                    "Passed",
+                    "Unknown"
+                  ]
+                },
+                "before": {
+                  "type": "object"
+                },
+                "after": {
+                  "type": "object"
+                },
+                "current": {
+                  "type": [
+                    "object",
+                    "null"
+                  ]
+                },
+                "hidden_files": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "critical_paths": {
+                  "type": "object"
+                },
+                "critical_scope": {
+                  "type": "object"
+                },
+                "measurement_span": {
+                  "type": "string"
+                },
+                "vscode_ui": {
+                  "const": "Not run"
+                }
+              },
+              "required": [
+                "status",
+                "current",
+                "measurement_span",
+                "vscode_ui"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "archive": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "const": "Not run"
+                }
+              },
+              "required": [
+                "status"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "enum": [
+                    "Passed",
+                    "Unknown"
+                  ]
+                },
+                "reason_code": {
+                  "type": "string"
+                },
+                "reasons": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "project_reduction_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "archive_increase_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "records_increase_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "combined_delta_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "before_artifact": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "after_artifact": {
+                  "type": "string"
+                },
+                "evaluation_artifact": {
+                  "type": "string"
+                },
+                "storage_release": {
+                  "const": "Unknown"
+                },
+                "measurement_span": {
+                  "type": "string"
+                },
+                "records_overlap": {
+                  "const": "Records overlaps cleanup T3; do not add these metrics."
+                }
+              },
+              "required": [
+                "status",
+                "before_artifact",
+                "after_artifact",
+                "evaluation_artifact",
+                "storage_release",
+                "measurement_span",
+                "records_overlap"
+              ],
+              "additionalProperties": false,
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "status": {
+                        "const": "Passed"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "project_reduction_bytes",
+                      "archive_increase_bytes",
+                      "records_increase_bytes",
+                      "combined_delta_bytes"
+                    ],
+                    "properties": {
+                      "project_reduction_bytes": {
+                        "type": "integer"
+                      },
+                      "archive_increase_bytes": {
+                        "type": "integer"
+                      },
+                      "records_increase_bytes": {
+                        "type": "integer"
+                      },
+                      "combined_delta_bytes": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "else": {
+                    "properties": {
+                      "project_reduction_bytes": {
+                        "type": "null"
+                      },
+                      "archive_increase_bytes": {
+                        "type": "null"
+                      },
+                      "records_increase_bytes": {
+                        "type": "null"
+                      },
+                      "combined_delta_bytes": {
+                        "type": "null"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "body",
+        "search",
+        "archive"
+      ],
+      "additionalProperties": false
+    },
+    "after_metrics_summary": {
+      "type": "object",
+      "properties": {
+        "body": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "const": "Not run"
+                }
+              },
+              "required": [
+                "status"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "const": "Unknown"
+                },
+                "reason_code": {
+                  "const": "AFTER_METRICS_NOT_RECORDED"
+                }
+              },
+              "required": [
+                "status",
+                "reason_code"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "enum": [
+                    "Passed",
+                    "Not run"
+                  ]
+                },
+                "basis": {
+                  "const": "verified journal content; not an additional live measurement or semantic acceptance"
+                },
+                "files": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "const": "replace"
+                      },
+                      "before_bytes": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "after_bytes": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "reduction_bytes": {
+                        "type": "integer"
+                      },
+                      "before_sha256": {
+                        "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+                      },
+                      "after_sha256": {
+                        "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+                      }
+                    },
+                    "required": [
+                      "path",
+                      "kind",
+                      "before_bytes",
+                      "after_bytes",
+                      "reduction_bytes",
+                      "before_sha256",
+                      "after_sha256"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "file_count": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "other_operations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "enum": [
+                          "move",
+                          "snapshot"
+                        ]
+                      },
+                      "before_bytes": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "before_sha256": {
+                        "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+                      },
+                      "after_sha256": {
+                        "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+                      },
+                      "destination": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "path",
+                      "kind",
+                      "before_bytes",
+                      "before_sha256",
+                      "after_sha256",
+                      "destination"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "before_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "after_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "reduction_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "files_omitted": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "other_operations_omitted": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "status",
+                "basis",
+                "files",
+                "file_count",
+                "other_operations",
+                "before_bytes",
+                "after_bytes",
+                "reduction_bytes",
+                "files_omitted",
+                "other_operations_omitted"
+              ],
+              "additionalProperties": false,
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "status": {
+                        "const": "Not run"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "before_bytes": {
+                        "type": "null"
+                      },
+                      "after_bytes": {
+                        "type": "null"
+                      },
+                      "reduction_bytes": {
+                        "type": "null"
+                      },
+                      "file_count": {
+                        "const": 0
+                      },
+                      "files": {
+                        "maxItems": 0
+                      }
+                    }
+                  },
+                  "else": {
+                    "properties": {
+                      "file_count": {
+                        "minimum": 1
+                      },
+                      "files": {
+                        "minItems": 1
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "search": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "const": "Not run"
+                }
+              },
+              "required": [
+                "status"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "const": "Unknown"
+                },
+                "reason_code": {
+                  "const": "AFTER_METRICS_NOT_RECORDED"
+                }
+              },
+              "required": [
+                "status",
+                "reason_code"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "enum": [
+                    "Passed",
+                    "Unknown"
+                  ]
+                },
+                "before": {
+                  "type": "object"
+                },
+                "after": {
+                  "type": "object"
+                },
+                "current": {
+                  "type": [
+                    "object",
+                    "null"
+                  ]
+                },
+                "hidden_files": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "critical_paths": {
+                  "type": "object"
+                },
+                "critical_scope": {
+                  "type": "object"
+                },
+                "measurement_span": {
+                  "type": "string"
+                },
+                "vscode_ui": {
+                  "const": "Not run"
+                },
+                "critical_paths_count": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "critical_paths_omitted": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "critical_scope_count": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "critical_scope_omitted": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "status",
+                "current",
+                "measurement_span",
+                "vscode_ui"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "archive": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "const": "Not run"
+                }
+              },
+              "required": [
+                "status"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "const": "Unknown"
+                },
+                "reason_code": {
+                  "const": "AFTER_METRICS_NOT_RECORDED"
+                }
+              },
+              "required": [
+                "status",
+                "reason_code"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "enum": [
+                    "Passed",
+                    "Unknown"
+                  ]
+                },
+                "reason_code": {
+                  "type": "string"
+                },
+                "reasons": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "project_reduction_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "archive_increase_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "records_increase_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "combined_delta_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "before_artifact": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "after_artifact": {
+                  "type": "string"
+                },
+                "evaluation_artifact": {
+                  "type": "string"
+                },
+                "storage_release": {
+                  "const": "Unknown"
+                },
+                "measurement_span": {
+                  "type": "string"
+                },
+                "records_overlap": {
+                  "const": "Records overlaps cleanup T3; do not add these metrics."
+                }
+              },
+              "required": [
+                "status",
+                "before_artifact",
+                "after_artifact",
+                "evaluation_artifact",
+                "storage_release",
+                "measurement_span",
+                "records_overlap"
+              ],
+              "additionalProperties": false,
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "status": {
+                        "const": "Passed"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "project_reduction_bytes",
+                      "archive_increase_bytes",
+                      "records_increase_bytes",
+                      "combined_delta_bytes"
+                    ],
+                    "properties": {
+                      "project_reduction_bytes": {
+                        "type": "integer"
+                      },
+                      "archive_increase_bytes": {
+                        "type": "integer"
+                      },
+                      "records_increase_bytes": {
+                        "type": "integer"
+                      },
+                      "combined_delta_bytes": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "else": {
+                    "properties": {
+                      "project_reduction_bytes": {
+                        "type": "null"
+                      },
+                      "archive_increase_bytes": {
+                        "type": "null"
+                      },
+                      "records_increase_bytes": {
+                        "type": "null"
+                      },
+                      "combined_delta_bytes": {
+                        "type": "null"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "artifact": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "body",
+        "search",
+        "archive"
+      ],
+      "additionalProperties": false
+    },
+    "after-metrics": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "fifan-cleanup-report"
+        },
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "kind": {
+          "const": "after-metrics"
+        },
+        "root": {
+          "type": "string"
+        },
+        "profile_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "operation_id": {
+          "$ref": "cleanup-profile.schema.json#/$defs/uuid"
+        },
+        "metrics": {
+          "$ref": "#/$defs/after_metrics"
+        },
+        "fingerprint": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        }
+      },
+      "required": [
+        "format",
+        "schema_version",
+        "kind",
+        "root",
+        "profile_sha256",
+        "operation_id",
+        "metrics",
+        "fingerprint"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "description": "Only complete typed reports. Unknown is a valid reported outcome, never converted to Passed by schema conformance."
+}

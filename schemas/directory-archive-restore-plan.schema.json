@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan private directory restore plan schema1",
+  "type": "object",
+  "required": [
+    "format",
+    "schema_version",
+    "kind",
+    "project_root",
+    "profile_sha256",
+    "config_sha256",
+    "roots",
+    "operation_id",
+    "fingerprint",
+    "archive_operation_id",
+    "journal_path",
+    "journal_fingerprint",
+    "batches"
+  ],
+  "properties": {
+    "format": {
+      "const": "fifan-directory-restore-plan"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "kind": {
+      "const": "directory-archive"
+    },
+    "project_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profile_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "config_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "roots": {
+      "type": "object",
+      "required": [
+        "project",
+        "archive",
+        "records"
+      ],
+      "properties": {
+        "project": {
+          "type": "object",
+          "required": [
+            "path",
+            "device",
+            "inode"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "device": {
+              "type": "integer"
+            },
+            "inode": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
+        },
+        "archive": {
+          "type": "object",
+          "required": [
+            "path",
+            "device",
+            "inode"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "device": {
+              "type": "integer"
+            },
+            "inode": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
+        },
+        "records": {
+          "type": "object",
+          "required": [
+            "path",
+            "device",
+            "inode"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "device": {
+              "type": "integer"
+            },
+            "inode": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "operation_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "archive_operation_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "journal_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "journal_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "batches": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "required": [
+          "source",
+          "destination",
+          "manifest_sha256",
+          "locator_action"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "minLength": 1
+          },
+          "destination": {
+            "type": "string",
+            "minLength": 1
+          },
+          "manifest_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "locator_action": {
+            "enum": [
+              "RetainInRecords",
+              "Absent"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": true,
+  "description": "No-clobber restore with fresh runtime ARC/REC grants. Owned locators are retained in records staging; original user payload is moved back, never deleted or replaced by a locator."
+}

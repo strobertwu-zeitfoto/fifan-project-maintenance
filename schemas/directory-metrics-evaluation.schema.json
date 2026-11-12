@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan three-domain footprint evaluation schema1",
+  "type": "object",
+  "required": [
+    "format",
+    "schema_version",
+    "root",
+    "status",
+    "reasons",
+    "project_reduction_bytes",
+    "archive_increase_bytes",
+    "records_increase_bytes",
+    "combined_delta_bytes",
+    "storage_release",
+    "content_conservation",
+    "exclusive_attribution"
+  ],
+  "properties": {
+    "format": {
+      "const": "fifan-directory-metrics-evaluation"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "root": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "profile_sha256": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "cohort_sha256": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "enum": [
+        "Passed",
+        "Unknown"
+      ]
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "project_reduction_bytes": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "archive_increase_bytes": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "records_increase_bytes": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "combined_delta_bytes": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "storage_release": {
+      "const": "Unknown"
+    },
+    "content_conservation": {
+      "const": "Unknown"
+    },
+    "exclusive_attribution": {
+      "const": "Unknown"
+    },
+    "observed_at": {
+      "type": "object"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": true,
+  "description": "Only complete fixed cohorts yield logical deltas; unknown coverage gives null. Passed means comparable observations, not reduced physical disk use, content conservation, exclusive causality or semantic acceptance."
+}

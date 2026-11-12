@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan explicit byte measurement result v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "contract",
+    "root",
+    "config_sha256",
+    "candidate",
+    "domains",
+    "storage",
+    "baseline_status",
+    "measurement_coverage"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "contract": {
+      "const": "goals-v1"
+    },
+    "root": {
+      "type": "string"
+    },
+    "config_sha256": {
+      "type": "string"
+    },
+    "candidate": {
+      "enum": [
+        "Disk",
+        "Preview"
+      ]
+    },
+    "collected_at": {
+      "type": "string"
+    },
+    "domains": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "status",
+          "bytes",
+          "items"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "Passed",
+              "Unknown"
+            ]
+          },
+          "bytes": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "observed_bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "presence": {
+                  "enum": [
+                    "Present",
+                    "Absent",
+                    "Unknown"
+                  ]
+                },
+                "absence_authorized": {
+                  "type": "boolean"
+                },
+                "sha256": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "identity": {
+                  "type": "array"
+                }
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "storage": {
+      "type": "object",
+      "required": [
+        "status",
+        "bytes",
+        "items"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "Passed",
+            "Unknown"
+          ]
+        },
+        "bytes": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "observed_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "presence": {
+                "enum": [
+                  "Present",
+                  "Absent",
+                  "Unknown"
+                ]
+              },
+              "absence_authorized": {
+                "type": "boolean"
+              },
+              "sha256": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "bytes": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "identity": {
+                "type": "array"
+              }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "baseline_status": {
+      "enum": [
+        "Passed",
+        "Unknown"
+      ]
+    },
+    "measurement_coverage": {
+      "type": "object"
+    },
+    "metrics": {
+      "type": "object"
+    },
+    "semantic_acceptance": {
+      "const": "Unknown"
+    }
+  },
+  "additionalProperties": true,
+  "description": "Per-file identity-bound logical bytes, not an atomic snapshot or whole-project allocation count. Only explicit role-bound allow_absent plus authorized FD-confirmed absence yields presence=Absent, bytes=0, SHA=null and absence_authorized=true; ordinary missing/protected inputs remain Unknown."
+}

@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "include": [
+    "*.md",
+    "docs/**",
+    "config/**",
+    "scripts/**",
+    "ProjectSettings/**",
+    "Packages/manifest.json",
+    "Packages/packages-lock.json"
+  ],
+  "exclude": [
+    "docs/private/**"
+  ],
+  "protected": [
+    ".git/**",
+    ".venv/**",
+    ".venv39/**",
+    "Library/**",
+    "UserSettings/**"
+  ],
+  "max_files": 20000,
+  "max_file_bytes": 4194304,
+  "max_total_bytes": 67108864,
+  "max_seconds": 60,
+  "max_findings": 200,
+  "documents": {
+    "large_bytes": 65536,
+    "paragraph_chars": 1000,
+    "duplicate_min_chars": 120
+  },
+  "links": {
+    "anchor_style": "github"
+  },
+  "paths": [],
+  "equalities": [],
+  "asset_sources": {},
+  "evidence_bindings": [],
+  "entrypoints": [],
+  "checks": [],
+  "waivers": [],
+  "artifacts": [
+    {
+      "pattern": "backup/**",
+      "age_days": 90
+    }
+  ],
+  "artifact_age_days": 90,
+  "historical_sources": [],
+  "asset_groups": {
+    "candidate": [
+      "ArtCandidates/**"
+    ],
+    "production": [
+      "Assets/**"
+    ]
+  },
+  "json_contracts": []
+}

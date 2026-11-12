@@ -1,0 +1,421 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan cleanup profile schema1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "project_root": {
+      "type": "string",
+      "pattern": "^/"
+    },
+    "preset": {
+      "enum": [
+        "generic",
+        "unity"
+      ],
+      "default": "generic"
+    },
+    "scan_roots": {
+      "type": "array",
+      "items": {
+        "$ref": "cleanup-profile.schema.json#/$defs/relative"
+      },
+      "minItems": 1,
+      "uniqueItems": true,
+      "default": [
+        "."
+      ]
+    },
+    "current": {
+      "type": "array",
+      "items": {
+        "$ref": "cleanup-profile.schema.json#/$defs/relative"
+      },
+      "uniqueItems": true
+    },
+    "protected": {
+      "type": "array",
+      "items": {
+        "$ref": "cleanup-profile.schema.json#/$defs/relative"
+      },
+      "uniqueItems": true
+    },
+    "keep": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "$ref": "cleanup-profile.schema.json#/$defs/relative"
+          },
+          "reason": {
+            "$ref": "cleanup-profile.schema.json#/$defs/text"
+          },
+          "build": {
+            "$ref": "cleanup-profile.schema.json#/$defs/build"
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "$ref": "cleanup-profile.schema.json#/$defs/evidence"
+            },
+            "maxItems": 100
+          },
+          "sha256": {
+            "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+          }
+        },
+        "required": [
+          "path",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "$ref": "cleanup-profile.schema.json#/$defs/relative"
+          },
+          "kind": {
+            "enum": [
+              "old_build",
+              "completed_log",
+              "disposable_output"
+            ]
+          }
+        },
+        "required": [
+          "path",
+          "kind"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "enum": [
+              "old_build",
+              "completed_log",
+              "disposable_output"
+            ]
+          },
+          "glob": {
+            "$ref": "cleanup-profile.schema.json#/$defs/relative"
+          },
+          "reason": {
+            "$ref": "cleanup-profile.schema.json#/$defs/text"
+          }
+        },
+        "required": [
+          "kind",
+          "glob",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "reference_sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "$ref": "cleanup-profile.schema.json#/$defs/relative"
+          },
+          "role": {
+            "enum": [
+              "current",
+              "historical"
+            ]
+          }
+        },
+        "required": [
+          "path",
+          "role"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "streaming_references": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "(?i)\\.(log|txt)$"
+      },
+      "uniqueItems": true
+    },
+    "quarantine_root": {
+      "type": "string",
+      "pattern": "^/"
+    },
+    "records_dir": {
+      "type": "string",
+      "pattern": "^/"
+    },
+    "require_no_open_handles": {
+      "type": "boolean",
+      "default": true
+    },
+    "budgets": {
+      "type": "object",
+      "properties": {
+        "max_entries": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000,
+          "default": 200000
+        },
+        "max_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 300,
+          "default": 60
+        },
+        "max_depth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 128,
+          "default": 16
+        },
+        "max_output_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30720,
+          "default": 8192
+        },
+        "max_hash_entries": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000,
+          "default": 20000
+        },
+        "max_hash_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 68719476736,
+          "default": 2147483648
+        },
+        "max_hash_file_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4294967296,
+          "default": 536870912
+        },
+        "max_artifact_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 134217728,
+          "default": 33554432
+        },
+        "max_reference_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 268435456,
+          "default": 67108864
+        },
+        "max_reference_file_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16777216,
+          "default": 4194304
+        },
+        "max_reference_files": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000,
+          "default": 20000
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "project_root"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "relative": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Project-relative native path; runtime additionally rejects dot/parent traversal, aliases, overlaps, protected paths and invalid spelling."
+    },
+    "identity": {
+      "type": "object",
+      "properties": {
+        "device": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inode": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "device",
+        "inode"
+      ],
+      "additionalProperties": false
+    },
+    "root_identity": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "cleanup-profile.schema.json#/$defs/text"
+        },
+        "device": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inode": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "path",
+        "device",
+        "inode"
+      ],
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "cleanup-profile.schema.json#/$defs/relative"
+        },
+        "sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        }
+      },
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "build": {
+      "type": "object",
+      "properties": {
+        "platform": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S",
+          "not": {
+            "pattern": "^[Uu][Nn][Kk][Nn][Oo][Ww][Nn]$"
+          }
+        },
+        "branch": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S",
+          "not": {
+            "pattern": "^[Uu][Nn][Kk][Nn][Oo][Ww][Nn]$"
+          }
+        },
+        "configuration": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S",
+          "not": {
+            "pattern": "^[Uu][Nn][Kk][Nn][Oo][Ww][Nn]$"
+          }
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S",
+          "not": {
+            "pattern": "^[Uu][Nn][Kk][Nn][Oo][Ww][Nn]$"
+          }
+        }
+      },
+      "required": [
+        "platform",
+        "branch",
+        "configuration",
+        "purpose"
+      ],
+      "additionalProperties": false
+    },
+    "dynamic_resolution": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "$ref": "cleanup-profile.schema.json#/$defs/relative"
+        },
+        "path": {
+          "$ref": "cleanup-profile.schema.json#/$defs/relative"
+        },
+        "sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "column": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "line_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "expression_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "reason": {
+          "$ref": "cleanup-profile.schema.json#/$defs/text"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "cleanup-profile.schema.json#/$defs/evidence"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "source",
+        "path",
+        "sha256",
+        "line",
+        "column",
+        "line_sha256",
+        "expression_sha256",
+        "reason",
+        "evidence"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$comment": "Strict data-only input, <=256KiB actual UTF-8/canonical bytes. External-root strings grant no IO. Runtime performs FD, canonical spelling, alias, root/cohort and semantic checks beyond JSON Schema."
+}

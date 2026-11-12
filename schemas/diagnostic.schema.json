@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan controlled CLI diagnostic v1.2",
+  "type": "object",
+  "required": [
+    "status",
+    "error",
+    "message",
+    "reason_code",
+    "hint",
+    "details"
+  ],
+  "properties": {
+    "status": {
+      "const": "Blocked"
+    },
+    "error": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "reason_code": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]{1,79}$"
+    },
+    "hint": {
+      "type": "string"
+    },
+    "details": {
+      "type": "object"
+    },
+    "project_writes": {
+      "oneOf": [
+        {
+          "const": 0
+        },
+        {
+          "const": "Unknown"
+        }
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "description": "Controlled templates and whitelisted metadata only; arbitrary exception text, original patches and encoded backups are never diagnostic fields."
+}

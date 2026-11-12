@@ -1,0 +1,1 @@
+Historical fixture payload. Preserve these exact bytes through archive and restore.

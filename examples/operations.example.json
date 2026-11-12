@@ -1,0 +1,15 @@
+{
+  "operations": [
+    {
+      "type": "replace",
+      "path": "README.md",
+      "old": "[历史记录](notes/old.md)",
+      "new": "[历史记录](archive/old.md)"
+    },
+    {
+      "type": "move",
+      "path": "notes/old.md",
+      "destination": "archive/old.md"
+    }
+  ]
+}

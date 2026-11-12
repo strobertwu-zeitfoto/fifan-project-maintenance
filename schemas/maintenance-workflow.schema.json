@@ -1,0 +1,439 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan fixed maintenance workflow schema1",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "fifan-maintenance-workflow"
+    },
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "root": {
+      "$ref": "cleanup-profile.schema.json#/$defs/text"
+    },
+    "profile_sha256": {
+      "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+    },
+    "config_sha256": {
+      "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+    },
+    "records_dir": {
+      "$ref": "cleanup-profile.schema.json#/$defs/text"
+    },
+    "quarantine_root": {
+      "anyOf": [
+        {
+          "$ref": "cleanup-profile.schema.json#/$defs/text"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "mode": {
+      "enum": [
+        "inspect",
+        "quarantine",
+        "purge"
+      ]
+    },
+    "workflow_path": {
+      "$ref": "cleanup-profile.schema.json#/$defs/text"
+    },
+    "operation_id": {
+      "$ref": "cleanup-profile.schema.json#/$defs/uuid"
+    },
+    "request": {
+      "anyOf": [
+        {
+          "$ref": "cleanup-request.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "request_sha256": {
+      "anyOf": [
+        {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "approved_plan_fingerprint": {
+      "anyOf": [
+        {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "after": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/after"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "after_inputs": {
+      "type": "object"
+    },
+    "after_archive_root": {
+      "anyOf": [
+        {
+          "$ref": "cleanup-profile.schema.json#/$defs/text"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "state": {
+      "enum": [
+        "Prepared",
+        "Cleaning",
+        "Purging",
+        "Rebaselining",
+        "AfterAction",
+        "Completed",
+        "NeedsAttention"
+      ]
+    },
+    "status": {
+      "enum": [
+        "Unknown",
+        "Passed",
+        "Blocked",
+        "Failed"
+      ]
+    },
+    "steps": {
+      "type": "array"
+    },
+    "measurements": {
+      "type": "array"
+    },
+    "measurement_data": {
+      "type": "object",
+      "properties": {
+        "T0": {
+          "anyOf": [
+            {
+              "$ref": "cleanup-report.schema.json#/$defs/measurement"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "T1": {
+          "anyOf": [
+            {
+              "$ref": "cleanup-report.schema.json#/$defs/measurement"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "T2": {
+          "anyOf": [
+            {
+              "$ref": "cleanup-report.schema.json#/$defs/measurement"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "T3": {
+          "anyOf": [
+            {
+              "$ref": "cleanup-report.schema.json#/$defs/measurement"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "cleanup": {
+      "type": "object"
+    },
+    "after_progress": {
+      "type": "object"
+    },
+    "completion": {
+      "type": "string"
+    },
+    "fingerprint": {
+      "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+    },
+    "preexisting_plan": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "enum": [
+                "existing-file",
+                "supplied-plan-data"
+              ]
+            },
+            "fingerprint": {
+              "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "origin",
+            "fingerprint"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "origin": {
+                    "const": "existing-file"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "path"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "measurement_span": {
+      "type": "string"
+    },
+    "measurement_note": {
+      "type": "string"
+    },
+    "baseline_path": {
+      "$ref": "cleanup-profile.schema.json#/$defs/text"
+    },
+    "report_path": {
+      "$ref": "cleanup-profile.schema.json#/$defs/text"
+    },
+    "inspect_path": {
+      "$ref": "cleanup-profile.schema.json#/$defs/text"
+    },
+    "cleanup_journal": {
+      "$ref": "cleanup-profile.schema.json#/$defs/text"
+    },
+    "cleanup_state": {
+      "type": "string"
+    },
+    "cleanup_status": {
+      "type": "string"
+    },
+    "inspection_status": {
+      "type": "string"
+    },
+    "global_coverage_status": {
+      "type": "string"
+    },
+    "after_action": {
+      "type": "object",
+      "properties": {
+        "metrics": {
+          "$ref": "cleanup-report.schema.json#/$defs/after_metrics_summary"
+        }
+      },
+      "additionalProperties": true
+    },
+    "metrics_status": {
+      "type": "string"
+    },
+    "reason_code": {
+      "type": "string"
+    },
+    "next_action": {
+      "type": "string"
+    },
+    "previous_attempts": {
+      "type": "array"
+    },
+    "after_metrics": {
+      "$ref": "cleanup-report.schema.json#/$defs/after_metrics_summary"
+    }
+  },
+  "required": [
+    "format",
+    "schema_version",
+    "root",
+    "profile_sha256",
+    "config_sha256",
+    "records_dir",
+    "quarantine_root",
+    "mode",
+    "workflow_path",
+    "operation_id",
+    "request",
+    "request_sha256",
+    "approved_plan_fingerprint",
+    "after",
+    "after_inputs",
+    "after_archive_root",
+    "state",
+    "status",
+    "steps",
+    "measurements",
+    "measurement_data",
+    "cleanup",
+    "after_progress",
+    "completion",
+    "fingerprint"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "after": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "directory-inspect"
+            },
+            "profile": {
+              "$ref": "cleanup-profile.schema.json#/$defs/text"
+            },
+            "request": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "kind",
+            "profile"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "directory-search"
+            },
+            "profile": {
+              "$ref": "cleanup-profile.schema.json#/$defs/text"
+            },
+            "plan": {
+              "$ref": "cleanup-profile.schema.json#/$defs/text"
+            },
+            "approve_plan": {
+              "$ref": "cleanup-profile.schema.json#/$defs/text"
+            }
+          },
+          "required": [
+            "kind",
+            "profile"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "directory-archive"
+            },
+            "profile": {
+              "$ref": "cleanup-profile.schema.json#/$defs/text"
+            },
+            "request": {
+              "type": "object"
+            },
+            "plan": {
+              "$ref": "cleanup-profile.schema.json#/$defs/text"
+            },
+            "approve_plan": {
+              "$ref": "cleanup-profile.schema.json#/$defs/text"
+            },
+            "archive_root": {
+              "$ref": "cleanup-profile.schema.json#/$defs/text"
+            }
+          },
+          "required": [
+            "kind",
+            "profile"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "task-check"
+            },
+            "profile": {
+              "$ref": "cleanup-profile.schema.json#/$defs/text"
+            },
+            "checks": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "kind",
+            "profile"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "file-plan"
+            },
+            "profile": {
+              "$ref": "cleanup-profile.schema.json#/$defs/text"
+            },
+            "checks": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "plan": {
+              "$ref": "cleanup-profile.schema.json#/$defs/text"
+            },
+            "approve_plan": {
+              "$ref": "cleanup-profile.schema.json#/$defs/text"
+            }
+          },
+          "required": [
+            "kind",
+            "profile"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "description": "Private complete receipt, not bounded CLI summary. Stored approvals do not grant runtime permission; resume must repeat exact action approval and roots. Final receipt writes after measurements are unmeasured."
+}

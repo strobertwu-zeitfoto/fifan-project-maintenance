@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan private search-config restore plan schema1",
+  "type": "object",
+  "required": [
+    "format",
+    "schema_version",
+    "kind",
+    "root",
+    "profile_sha256",
+    "config_sha256",
+    "root_identity",
+    "operation_id",
+    "fingerprint",
+    "status",
+    "journal_path",
+    "journal_fingerprint",
+    "source_operation_id",
+    "files",
+    "terminal_state"
+  ],
+  "properties": {
+    "format": {
+      "const": "fifan-directory-restore-plan"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "kind": {
+      "const": "search-config"
+    },
+    "root": {
+      "type": "string"
+    },
+    "profile_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "config_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "root_identity": {
+      "type": "object",
+      "required": [
+        "device",
+        "inode"
+      ],
+      "properties": {
+        "device": {
+          "type": "integer"
+        },
+        "inode": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "operation_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "status": {
+      "const": "Preview"
+    },
+    "journal_path": {
+      "type": "string"
+    },
+    "journal_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_operation_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "action"
+        ],
+        "properties": {
+          "path": {
+            "enum": [
+              ".ignore",
+              ".vscode/settings.json"
+            ]
+          },
+          "action": {
+            "enum": [
+              "restore_bytes",
+              "remove_owned_created_file"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "terminal_state": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true,
+  "description": "Restore exact original bytes, or remove only unchanged files created by this tool with recorded ownership. No user-file deletion entrypoint."
+}

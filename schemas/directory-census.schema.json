@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan directory census result schema1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "kind",
+    "project_root",
+    "profile_sha256",
+    "status",
+    "coverage",
+    "hash_coverage",
+    "file_count",
+    "logical_bytes",
+    "physical_space_released_bytes",
+    "fingerprint"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "kind": {
+      "const": "directory-census"
+    },
+    "project_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profile_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "status": {
+      "enum": [
+        "Passed",
+        "Unknown"
+      ]
+    },
+    "coverage": {
+      "type": "object",
+      "required": [
+        "complete",
+        "count_is_lower_bound"
+      ],
+      "properties": {
+        "complete": {
+          "type": "boolean"
+        },
+        "count_is_lower_bound": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true
+    },
+    "hash_coverage": {
+      "type": "object"
+    },
+    "file_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "directory_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "logical_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "unique_inode_logical_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "physical_space_released_bytes": {
+      "type": "null"
+    },
+    "duplicates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "sha256",
+          "paths",
+          "deletion_authorized"
+        ],
+        "properties": {
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "paths": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "deletion_authorized": {
+            "const": false
+          }
+        }
+      }
+    },
+    "body_bytes_sent": {
+      "const": 0
+    },
+    "fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "additionalProperties": true
+}

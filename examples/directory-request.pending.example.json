@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "batches": [
+    {
+      "source": "runs/closed",
+      "destination": "directory-example/runs-closed",
+      "closure": {
+        "decision": "pending",
+        "reason": "",
+        "evidence": []
+      },
+      "historical_references": [
+        {
+          "path": "history/old-report.md",
+          "sha256": "3c3bf49c8d3e8e1602e6a9b5350d749fc22800227930da3dc957c9d2af95f15f",
+          "reason": "Historical source; locate the archive or restore before using the old path."
+        }
+      ],
+      "known_absent": []
+    }
+  ]
+}

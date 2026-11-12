@@ -1,0 +1,258 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan project maintenance configuration",
+  "description": "Configuration loading contract. Module-specific declaration semantics are checked separately. No project code is executed.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "const": 1
+    },
+    "include": {
+      "type": "array",
+      "default": [
+        "*.md",
+        "*.markdown",
+        "*.html",
+        "*.htm",
+        "*.json",
+        "*.toml",
+        "*.yaml",
+        "*.yml",
+        "*.py",
+        "*.sh",
+        "*.command",
+        "requirements*.txt",
+        "docs/**",
+        "tools/**",
+        "scripts/**",
+        ".github/workflows/**",
+        "ProjectSettings/**",
+        "Packages/manifest.json",
+        "Packages/packages-lock.json"
+      ],
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "exclude": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "protected": {
+      "type": "array",
+      "default": [
+        ".git/**",
+        ".venv/**",
+        ".venv39/**",
+        "Library/**",
+        "UserSettings/**"
+      ],
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "max_files": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 20000
+    },
+    "max_file_bytes": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 4194304
+    },
+    "max_total_bytes": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 67108864
+    },
+    "max_seconds": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 60
+    },
+    "max_findings": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 200
+    },
+    "document_max_bytes": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 65536,
+      "description": "Effective compatibility alias for documents.large_bytes; conflicting simultaneous declarations are Blocked by the loader."
+    },
+    "paragraph_max_chars": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1000,
+      "description": "Effective compatibility alias for documents.paragraph_chars; conflicting simultaneous declarations are Blocked by the loader."
+    },
+    "large_file_bytes": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 10485760
+    },
+    "paths": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "equalities": {
+      "type": "array",
+      "default": [],
+      "description": "The loader accepts an array; the corresponding check validates individual declarations and reports invalid entries."
+    },
+    "asset_sources": {
+      "type": "object",
+      "default": {},
+      "description": "The loader accepts an object; assets check validates path-to-source-record string mappings."
+    },
+    "evidence_bindings": {
+      "type": "array",
+      "default": [],
+      "description": "The loader accepts an array; the corresponding check validates individual declarations and reports invalid entries."
+    },
+    "entrypoints": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "checks": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "waivers": {
+      "type": "array",
+      "default": [],
+      "description": "The loader accepts an array; the corresponding check validates individual declarations and reports invalid entries."
+    },
+    "artifacts": {
+      "type": "array",
+      "default": [],
+      "description": "The loader accepts an array; the corresponding check validates individual declarations and reports invalid entries."
+    },
+    "anchor_style": {
+      "type": "string",
+      "default": "github",
+      "enum": [
+        "github",
+        "unknown"
+      ],
+      "description": "Effective compatibility alias for links.anchor_style; conflicting simultaneous declarations are Blocked by the loader."
+    },
+    "artifact_age_days": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 90
+    },
+    "documents": {
+      "type": "object",
+      "default": {
+        "large_bytes": 65536,
+        "paragraph_chars": 1000,
+        "duplicate_min_chars": 120
+      },
+      "additionalProperties": false,
+      "properties": {
+        "large_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "paragraph_chars": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "duplicate_min_chars": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "links": {
+      "type": "object",
+      "default": {
+        "anchor_style": "github"
+      },
+      "additionalProperties": false,
+      "properties": {
+        "anchor_style": {
+          "type": "string",
+          "enum": [
+            "github",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "historical_sources": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "default": [],
+      "description": "Explicit source globs whose unresolved local links are Unknown; names alone do not establish historical semantics."
+    },
+    "asset_groups": {
+      "type": "object",
+      "default": {},
+      "description": "Loader accepts an object; assets check validates label-to-glob-list mapping. Labels describe distribution, never adoption."
+    },
+    "json_contracts": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\.json$"
+          },
+          "records": {
+            "type": "string",
+            "default": ""
+          },
+          "required": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "description": "Explicit JSON object/object-array contracts. JSON Pointer syntax and module semantics are checked separately; required means existence, paths means project-root-relative target existence."
+    }
+  }
+}

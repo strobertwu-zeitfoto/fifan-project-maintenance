@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "sources": [
+    "current.md"
+  ],
+  "reference_bodies": [
+    "archive/*.md"
+  ],
+  "historical_roots": [
+    "archive"
+  ],
+  "checks": [
+    "documents",
+    "links"
+  ],
+  "views": [
+    {
+      "name": "current",
+      "path": "current.md",
+      "start_line": 1,
+      "end_line": 3,
+      "kind": "current"
+    },
+    {
+      "name": "historical",
+      "path": "current.md",
+      "start_line": 5,
+      "end_line": 8,
+      "kind": "historical"
+    }
+  ],
+  "budgets": {
+    "max_files": 2000,
+    "max_file_bytes": 4194304,
+    "max_total_bytes": 67108864,
+    "max_seconds": 60,
+    "max_findings": 200
+  }
+}

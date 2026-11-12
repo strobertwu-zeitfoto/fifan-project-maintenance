@@ -1,0 +1,209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan directory archive request schema1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "batches"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "batches": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source",
+          "destination",
+          "closure"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "minLength": 1
+          },
+          "destination": {
+            "type": "string",
+            "minLength": 1
+          },
+          "closure": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "decision",
+              "reason",
+              "evidence"
+            ],
+            "properties": {
+              "decision": {
+                "type": "string",
+                "description": "Only closed with nonempty reason and verified evidence can qualify; other strings are inspectable but Blocked by eligibility."
+              },
+              "reason": {
+                "type": "string"
+              },
+              "evidence": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "path",
+                    "sha256"
+                  ],
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[a-fA-F0-9]{64}$"
+                    }
+                  }
+                },
+                "maxItems": 100
+              }
+            }
+          },
+          "historical_references": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "path",
+                "sha256",
+                "reason"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-fA-F0-9]{64}$"
+                },
+                "reason": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "maxItems": 1000
+          },
+          "known_absent": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "path",
+                "reason"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "reason": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "maxItems": 1000,
+            "description": "Paths are relative inside this batch source directory; declared pre-existing absence does not reconstruct content or excuse unreadable/unknown entries."
+          },
+          "dynamic_reference_resolutions": {
+            "type": "array",
+            "maxItems": 100000,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "source",
+                "path",
+                "sha256",
+                "line",
+                "line_sha256",
+                "expression_sha256",
+                "reason",
+                "evidence",
+                "column"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "line_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "expression_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "reason": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "evidence": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 100,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "path",
+                      "sha256"
+                    ],
+                    "properties": {
+                      "path": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "sha256": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      }
+                    }
+                  }
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Must exactly equal enclosing batch.source; rejects copying a review to another candidate."
+                },
+                "column": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "One-based Unicode character column of regex match start in original physical line."
+                }
+              }
+            },
+            "description": "Per-batch assertion this exact dynamic expression is not a consumer of batch.source. Full source SHA, physical line SHA (without CR/LF), and regex match SHA must match; evidence must be authorized and unchanged. Fixed consumers and current originals are never exempted."
+          }
+        }
+      },
+      "maxItems": 100
+    }
+  },
+  "description": "Explicit candidate batches only. Runtime validates same-volume safe directories, exact profile candidates, closure fingerprints and reference treatment. NoDelete; no commands, callbacks, compression or cross-volume copy/delete."
+}

@@ -1,0 +1,263 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan full check report schema 1 with 1.1 scope binding",
+  "description": "Documentary additive report contract, not a runtime acceptance claim. Summary/preflight/read/compare envelopes are separate. Legacy reports lacking new bindings cannot establish complete cross-version comparison.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "tool_version",
+    "root",
+    "mode",
+    "config_sha256",
+    "checks",
+    "scope",
+    "views",
+    "budgets",
+    "coverage",
+    "finding_total",
+    "findings",
+    "findings_truncated",
+    "has_failures"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "tool_version": {
+      "type": "string"
+    },
+    "root": {
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "check",
+        "inventory"
+      ]
+    },
+    "config_sha256": {
+      "type": "string"
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "scope": {
+      "type": "object",
+      "required": [
+        "sources",
+        "reference_bodies",
+        "historical_roots"
+      ],
+      "properties": {
+        "sources": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "reference_bodies": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "historical_roots": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "views": {
+      "type": "array"
+    },
+    "budgets": {
+      "type": "object"
+    },
+    "candidate": {
+      "enum": [
+        "Disk",
+        "Preview"
+      ]
+    },
+    "metrics": {
+      "type": "object"
+    },
+    "anchors": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "description": "Full original heading/HTML anchor identities hashed as SHA256; source paths plus hashes support lost-anchor comparison without exposing title-derived slugs."
+    },
+    "coverage": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "check",
+          "status"
+        ],
+        "properties": {
+          "check": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "Passed",
+              "Failed",
+              "Blocked",
+              "Not run",
+              "Unknown"
+            ]
+          },
+          "generation_limited": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "finding_total": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "check",
+          "code",
+          "message",
+          "path",
+          "line",
+          "status",
+          "severity",
+          "evidence"
+        ],
+        "properties": {
+          "check": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "line": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "status": {
+            "enum": [
+              "Passed",
+              "Failed",
+              "Blocked",
+              "Not run",
+              "Unknown"
+            ]
+          },
+          "severity": {
+            "enum": [
+              "error",
+              "warning",
+              "info"
+            ]
+          },
+          "evidence": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "findings_truncated": {
+      "type": "boolean"
+    },
+    "has_failures": {
+      "type": "boolean"
+    },
+    "files": {
+      "type": "object"
+    },
+    "model_calls": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "semantic_acceptance": {
+      "const": "Not run"
+    },
+    "anchor_encoding": {
+      "const": "sha256"
+    },
+    "domain_contract_version": {
+      "const": 1
+    },
+    "coverage_domains": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "status",
+          "complete",
+          "checked",
+          "unknown_reasons",
+          "scope"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "Passed",
+              "Failed",
+              "Blocked",
+              "Not run",
+              "Unknown"
+            ]
+          },
+          "complete": {
+            "type": "boolean"
+          },
+          "checked": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "observed": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "unknown_reasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "scope": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      },
+      "description": "Domain completeness is independent from observed failures. Missing domain evidence in legacy reports remains Unknown; do not reconstruct completeness from finding counts."
+    }
+  },
+  "additionalProperties": true
+}

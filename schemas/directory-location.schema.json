@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan directory payload location result schema1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "kind",
+    "status",
+    "operation_id",
+    "original",
+    "original_payload_exists",
+    "original_path_status",
+    "resolution",
+    "archive_path",
+    "archive_present",
+    "scripts_replayable_at_original"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "kind": {
+      "const": "directory-archive"
+    },
+    "status": {
+      "const": "Passed"
+    },
+    "operation_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "original": {
+      "type": "string"
+    },
+    "original_payload_exists": {
+      "type": "boolean"
+    },
+    "original_path_status": {
+      "enum": [
+        "Present",
+        "Missing"
+      ]
+    },
+    "resolution": {
+      "enum": [
+        "Restored",
+        "ArchivedResolved"
+      ]
+    },
+    "archive_path": {
+      "type": "string"
+    },
+    "archive_present": {
+      "type": "boolean"
+    },
+    "scripts_replayable_at_original": {
+      "enum": [
+        false,
+        "Not run"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "description": "ArchivedResolved is only a locator result, never original-path existence or script replay. A locator directory is not the original payload."
+}

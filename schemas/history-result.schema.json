@@ -1,0 +1,236 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan bounded history result v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "root",
+    "status",
+    "records",
+    "coverage"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "root": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "Passed",
+        "Unknown"
+      ]
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "sha256",
+          "kind",
+          "status",
+          "files",
+          "source_scope"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "source_scope": {
+            "enum": [
+              "Known",
+              "Unknown"
+            ]
+          },
+          "files": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "object",
+              "required": [
+                "path",
+                "kind",
+                "treatment",
+                "applied_rewrite",
+                "before_bytes",
+                "after_bytes",
+                "byte_delta"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string"
+                },
+                "destination": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "before_sha256": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "after_sha256": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "before_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "after_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "byte_delta": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "checked_sha256": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "checked_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "treatment": {
+                  "type": "string"
+                },
+                "completed_operation": {
+                  "type": "boolean"
+                },
+                "applied_rewrite": {
+                  "type": "boolean"
+                },
+                "snapshot_created": {
+                  "type": "boolean"
+                },
+                "current_state": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "sha256": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
+                    }
+                  },
+                  "additionalProperties": true
+                },
+                "destination_current_state": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string"
+                        },
+                        "sha256": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "bytes": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        }
+                      },
+                      "additionalProperties": true
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "operation_current_state": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "required": [
+        "status",
+        "explicit_record_directories_complete",
+        "project_document_coverage",
+        "unreadable_materials",
+        "meaning"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "Passed",
+            "Unknown"
+          ]
+        },
+        "explicit_record_directories_complete": {
+          "type": "boolean"
+        },
+        "project_document_coverage": {
+          "const": "Unknown"
+        },
+        "unreadable_materials": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "meaning": {
+          "type": "string"
+        }
+      }
+    },
+    "semantic_acceptance": {
+      "const": "Unknown"
+    }
+  },
+  "additionalProperties": true,
+  "description": "Derived explicit-record evidence only, not a project progress ledger. Check-only rows retain null before/after; unknown source scope means files=null. Missing record evidence never proves no past governance."
+}

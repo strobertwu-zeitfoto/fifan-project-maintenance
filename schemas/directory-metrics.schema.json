@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan three-domain directory metrics schema1",
+  "type": "object",
+  "required": [
+    "format",
+    "schema_version",
+    "root",
+    "profile_sha256",
+    "cohort_sha256",
+    "cohort",
+    "domains",
+    "total_logical_bytes",
+    "total_is_lower_bound",
+    "observed_at"
+  ],
+  "properties": {
+    "format": {
+      "const": "fifan-directory-metrics"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profile_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "cohort_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "cohort": {
+      "type": "object"
+    },
+    "domains": {
+      "type": "object",
+      "required": [
+        "project_payload",
+        "archive_payload",
+        "records"
+      ],
+      "additionalProperties": {
+        "type": "object"
+      }
+    },
+    "total_logical_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "total_is_lower_bound": {
+      "type": "boolean"
+    },
+    "observed_at": {
+      "type": "string",
+      "minLength": 1
+    },
+    "body_bytes_read": {
+      "const": 0
+    },
+    "storage_release": {
+      "const": "Unknown"
+    },
+    "content_conservation": {
+      "const": "Unknown"
+    },
+    "exclusive_attribution": {
+      "const": "Unknown"
+    }
+  },
+  "additionalProperties": true,
+  "description": "Fixed source/destination routes plus the entire records root, not whole-project or physical allocation accounting. Per-entry observations are non-atomic; artifacts appended after observed_at are not included."
+}

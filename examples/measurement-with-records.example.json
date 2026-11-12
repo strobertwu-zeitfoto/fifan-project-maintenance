@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "active": [
+    "current.md"
+  ],
+  "views": [],
+  "reused_archives": [],
+  "new_archives": [
+    "archive/current.before.md"
+  ],
+  "external_roots": [
+    "/absolute/path/outside-your-project/maintenance-results"
+  ],
+  "external_records": [
+    {
+      "root": "/absolute/path/outside-your-project/maintenance-results",
+      "path": "plan.json"
+    },
+    {
+      "root": "/absolute/path/outside-your-project/maintenance-results",
+      "path": "operations/actual-operation-id.json"
+    }
+  ],
+  "allow_absent": [
+    {
+      "role": "new_archives",
+      "path": "archive/current.before.md"
+    },
+    {
+      "role": "external_records",
+      "root": "/absolute/path/outside-your-project/maintenance-results",
+      "path": "operations/actual-operation-id.json"
+    }
+  ]
+}

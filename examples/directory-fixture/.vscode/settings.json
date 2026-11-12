@@ -1,0 +1,5 @@
+{
+  // Preserve this user comment and trailing comma.
+  "editor.tabSize": 2,
+  "search.exclude": { "unrelated-user-rule": false, },
+}

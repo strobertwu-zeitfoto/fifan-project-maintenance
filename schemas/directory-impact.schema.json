@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan directory qualification/reference impact result schema1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "kind",
+    "project_root",
+    "profile_sha256",
+    "request_sha256",
+    "status",
+    "batches",
+    "coverage",
+    "material_sha256",
+    "fingerprint"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "kind": {
+      "const": "directory-impact"
+    },
+    "project_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profile_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "status": {
+      "enum": [
+        "Passed",
+        "Blocked",
+        "Unknown"
+      ]
+    },
+    "batches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source",
+          "destination",
+          "eligible",
+          "status"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "minLength": 1
+          },
+          "destination": {
+            "type": "string",
+            "minLength": 1
+          },
+          "eligible": {
+            "type": "boolean"
+          },
+          "status": {
+            "enum": [
+              "Passed",
+              "Blocked",
+              "Unknown"
+            ]
+          }
+        }
+      }
+    },
+    "coverage": {
+      "type": "object"
+    },
+    "material_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "body_bytes_sent": {
+      "const": 0
+    },
+    "fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "additionalProperties": true,
+  "description": "Eligibility covers explicit closure/classification/declared references only. Current sources themselves and their current dependencies block, including sources without self links; dynamic/incomplete evidence stays Unknown. Runtime manifest, fresh scope enumeration and root checks remain required."
+}

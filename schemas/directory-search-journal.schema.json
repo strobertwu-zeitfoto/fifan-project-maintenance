@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan private search-config journal schema1",
+  "type": "object",
+  "required": [
+    "format",
+    "schema_version",
+    "kind",
+    "root",
+    "profile_sha256",
+    "config_sha256",
+    "root_identity",
+    "operation_id",
+    "fingerprint",
+    "journal_path",
+    "plan",
+    "state",
+    "status",
+    "entries",
+    "pending",
+    "directory_intent",
+    "created_dirs",
+    "baseline",
+    "validation",
+    "reason_code"
+  ],
+  "properties": {
+    "format": {
+      "const": "fifan-directory-journal"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "kind": {
+      "const": "search-config"
+    },
+    "root": {
+      "type": "string"
+    },
+    "profile_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "config_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "root_identity": {
+      "type": "object",
+      "required": [
+        "device",
+        "inode"
+      ],
+      "properties": {
+        "device": {
+          "type": "integer"
+        },
+        "inode": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "operation_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "journal_path": {
+      "type": "string"
+    },
+    "plan": {
+      "$ref": "directory-search-plan.schema.json"
+    },
+    "state": {
+      "enum": [
+        "Applying",
+        "Applied",
+        "Blocked",
+        "Restoring",
+        "Restored",
+        "RolledBack",
+        "Recovered"
+      ]
+    },
+    "status": {
+      "type": "string"
+    },
+    "entries": {
+      "type": "array"
+    },
+    "pending": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "directory_intent": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "created_dirs": {
+      "type": "array"
+    },
+    "baseline": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "validation": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "reason_code": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "directory_cleanup": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "path",
+            "owner",
+            "phase"
+          ],
+          "properties": {
+            "path": {
+              "const": ".vscode"
+            },
+            "owner": {
+              "type": "object",
+              "required": [
+                "device",
+                "inode"
+              ],
+              "properties": {
+                "device": {
+                  "type": "integer"
+                },
+                "inode": {
+                  "type": "integer"
+                }
+              },
+              "additionalProperties": false
+            },
+            "phase": {
+              "enum": [
+                "intent",
+                "removed",
+                "retained"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "description": "PRIVATE unredacted 0600 material, separate from v2 journals and unsupported by old session recovery. Restore updates this same journal and retains source operation identity."
+}

@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "operations": [
+    {
+      "kind": "snapshot",
+      "path": "current.md",
+      "destination": "archive/current.before.md",
+      "expected_sha256": "94c227937dc0e84c1e0fbe2ceb47c94ccb509187a0b658b6e3bc923a8ef81b36",
+      "origin": {
+        "reference_base": ".",
+        "classification_basis": "隔离示例经Agent声明为历史快照，不作为业务需求。"
+      }
+    },
+    {
+      "type": "replace",
+      "path": "current.md",
+      "old": "当前说明：旧摘要。",
+      "new": "当前说明：已整理摘要。"
+    }
+  ],
+  "guards": [
+    {
+      "kind": "heading",
+      "path": "current.md",
+      "value": "# 历史"
+    },
+    {
+      "kind": "snippet",
+      "path": "current.md",
+      "value": "必须保留的决定。"
+    }
+  ]
+}

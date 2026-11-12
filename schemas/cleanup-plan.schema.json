@@ -1,0 +1,488 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan cleanup action plan schema1",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/quarantine"
+    },
+    {
+      "$ref": "#/$defs/restore"
+    },
+    {
+      "$ref": "#/$defs/purge"
+    }
+  ],
+  "$defs": {
+    "quarantine": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "fifan-cleanup-plan"
+        },
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "kind": {
+          "const": "quarantine"
+        },
+        "root": {
+          "$ref": "cleanup-profile.schema.json#/$defs/text"
+        },
+        "profile_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "config_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "roots": {
+          "type": "object",
+          "properties": {
+            "project": {
+              "$ref": "cleanup-profile.schema.json#/$defs/root_identity"
+            },
+            "quarantine": {
+              "$ref": "cleanup-profile.schema.json#/$defs/root_identity"
+            },
+            "records": {
+              "$ref": "cleanup-profile.schema.json#/$defs/root_identity"
+            }
+          },
+          "required": [
+            "project",
+            "quarantine",
+            "records"
+          ],
+          "additionalProperties": false
+        },
+        "operation_id": {
+          "$ref": "cleanup-profile.schema.json#/$defs/uuid"
+        },
+        "fingerprint": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "request": {
+          "$ref": "cleanup-request.schema.json"
+        },
+        "request_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "qualification": {
+          "$ref": "cleanup-report.schema.json#/$defs/qualification"
+        },
+        "material_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "source": {
+                "$ref": "cleanup-profile.schema.json#/$defs/relative"
+              },
+              "candidate_kind": {
+                "enum": [
+                  "old_build",
+                  "completed_log",
+                  "disposable_output"
+                ]
+              },
+              "entry_kind": {
+                "enum": [
+                  "file",
+                  "directory"
+                ]
+              },
+              "quarantine_relative": {
+                "$ref": "cleanup-profile.schema.json#/$defs/relative"
+              },
+              "manifest": {
+                "type": "object",
+                "properties": {
+                  "entries": {
+                    "type": "array",
+                    "items": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "path": {
+                              "$ref": "cleanup-profile.schema.json#/$defs/relative"
+                            },
+                            "kind": {
+                              "const": "file"
+                            },
+                            "device": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "inode": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "mode": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 4095
+                            },
+                            "mtime_ns": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "ctime_ns": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "bytes": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "sha256": {
+                              "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+                            },
+                            "nlink": {
+                              "type": "integer",
+                              "const": 1
+                            }
+                          },
+                          "required": [
+                            "path",
+                            "kind",
+                            "device",
+                            "inode",
+                            "mode",
+                            "mtime_ns",
+                            "ctime_ns",
+                            "bytes",
+                            "sha256",
+                            "nlink"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "path": {
+                              "$ref": "cleanup-profile.schema.json#/$defs/relative"
+                            },
+                            "kind": {
+                              "const": "directory"
+                            },
+                            "device": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "inode": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "mode": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 4095
+                            },
+                            "mtime_ns": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "ctime_ns": {
+                              "type": "integer",
+                              "minimum": 0
+                            }
+                          },
+                          "required": [
+                            "path",
+                            "kind",
+                            "device",
+                            "inode",
+                            "mode",
+                            "mtime_ns",
+                            "ctime_ns"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "minItems": 1
+                  },
+                  "root_kind": {
+                    "enum": [
+                      "file",
+                      "directory"
+                    ]
+                  },
+                  "file_count": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "directory_count": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "file_bytes": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "entries",
+                  "root_kind",
+                  "file_count",
+                  "directory_count",
+                  "file_bytes"
+                ],
+                "additionalProperties": false
+              },
+              "open_handles": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "source",
+              "candidate_kind",
+              "entry_kind",
+              "quarantine_relative",
+              "manifest",
+              "open_handles"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "format",
+        "schema_version",
+        "kind",
+        "root",
+        "profile_sha256",
+        "config_sha256",
+        "roots",
+        "operation_id",
+        "fingerprint",
+        "request",
+        "request_sha256",
+        "qualification",
+        "material_sha256",
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "restore": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "fifan-cleanup-plan"
+        },
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "kind": {
+          "const": "restore"
+        },
+        "root": {
+          "$ref": "cleanup-profile.schema.json#/$defs/text"
+        },
+        "profile_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "config_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "roots": {
+          "type": "object",
+          "properties": {
+            "project": {
+              "$ref": "cleanup-profile.schema.json#/$defs/root_identity"
+            },
+            "quarantine": {
+              "$ref": "cleanup-profile.schema.json#/$defs/root_identity"
+            },
+            "records": {
+              "$ref": "cleanup-profile.schema.json#/$defs/root_identity"
+            }
+          },
+          "required": [
+            "project",
+            "quarantine",
+            "records"
+          ],
+          "additionalProperties": false
+        },
+        "operation_id": {
+          "$ref": "cleanup-profile.schema.json#/$defs/uuid"
+        },
+        "fingerprint": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "quarantine_operation_id": {
+          "$ref": "cleanup-profile.schema.json#/$defs/uuid"
+        },
+        "quarantine_fingerprint": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "journal_path": {
+          "$ref": "cleanup-profile.schema.json#/$defs/text"
+        },
+        "journal_fingerprint": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "journal_identity": {
+          "$ref": "cleanup-profile.schema.json#/$defs/identity"
+        }
+      },
+      "required": [
+        "format",
+        "schema_version",
+        "kind",
+        "root",
+        "profile_sha256",
+        "config_sha256",
+        "roots",
+        "operation_id",
+        "fingerprint",
+        "quarantine_operation_id",
+        "quarantine_fingerprint",
+        "journal_path",
+        "journal_fingerprint",
+        "journal_identity"
+      ],
+      "additionalProperties": false
+    },
+    "purge": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "fifan-cleanup-plan"
+        },
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "kind": {
+          "const": "purge"
+        },
+        "root": {
+          "$ref": "cleanup-profile.schema.json#/$defs/text"
+        },
+        "profile_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "config_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "roots": {
+          "type": "object",
+          "properties": {
+            "project": {
+              "$ref": "cleanup-profile.schema.json#/$defs/root_identity"
+            },
+            "quarantine": {
+              "$ref": "cleanup-profile.schema.json#/$defs/root_identity"
+            },
+            "records": {
+              "$ref": "cleanup-profile.schema.json#/$defs/root_identity"
+            }
+          },
+          "required": [
+            "project",
+            "quarantine",
+            "records"
+          ],
+          "additionalProperties": false
+        },
+        "operation_id": {
+          "$ref": "cleanup-profile.schema.json#/$defs/uuid"
+        },
+        "fingerprint": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "quarantine_operation_id": {
+          "$ref": "cleanup-profile.schema.json#/$defs/uuid"
+        },
+        "quarantine_fingerprint": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "journal_path": {
+          "$ref": "cleanup-profile.schema.json#/$defs/text"
+        },
+        "journal_fingerprint": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "journal_identity": {
+          "$ref": "cleanup-profile.schema.json#/$defs/identity"
+        },
+        "authorization": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "enum": [
+                "original_request",
+                "new_approval"
+              ]
+            },
+            "reference": {
+              "$ref": "cleanup-profile.schema.json#/$defs/text"
+            },
+            "quarantine_fingerprint": {
+              "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+            },
+            "loss_accepted": {
+              "const": true
+            }
+          },
+          "required": [
+            "source",
+            "reference",
+            "quarantine_fingerprint",
+            "loss_accepted"
+          ],
+          "additionalProperties": false
+        },
+        "qualification": {
+          "$ref": "cleanup-report.schema.json#/$defs/qualification"
+        },
+        "material_sha256": {
+          "$ref": "cleanup-profile.schema.json#/$defs/sha256"
+        },
+        "order": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "minItems": 2,
+            "maxItems": 2
+          }
+        }
+      },
+      "required": [
+        "format",
+        "schema_version",
+        "kind",
+        "root",
+        "profile_sha256",
+        "config_sha256",
+        "roots",
+        "operation_id",
+        "fingerprint",
+        "quarantine_operation_id",
+        "quarantine_fingerprint",
+        "journal_path",
+        "journal_fingerprint",
+        "journal_identity",
+        "authorization",
+        "qualification",
+        "material_sha256",
+        "order"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "description": "Private complete action plan, not a CLI summary. Exact seal, cross-field bindings and runtime roots/approval remain enforced by operations."
+}

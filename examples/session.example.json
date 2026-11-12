@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "root": "/absolute/path/to/your-project",
+  "journals": [
+    "/absolute/path/outside-your-project/maintenance-results/operations/first-operation-id.json",
+    "/absolute/path/outside-your-project/maintenance-results/operations/second-operation-id.json"
+  ],
+  "reports": [],
+  "profiles": []
+}

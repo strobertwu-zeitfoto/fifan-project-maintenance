@@ -1,0 +1,38 @@
+{
+  "version": 3,
+  "operations": [
+    {
+      "kind": "snapshot",
+      "path": "current.md",
+      "destination": "archive/current.before.md",
+      "expected_sha256": "44a11b15c9636ea36aa6e04d0814c91b10f5be7fbc8e917242e9c5aa41740798",
+      "origin": {
+        "reference_base": ".",
+        "classification_basis": "Agent verified this isolated example snapshot as historical; not business requirements."
+      }
+    },
+    {
+      "type": "replace_many",
+      "path": "current.md",
+      "expected_sha256": "44a11b15c9636ea36aa6e04d0814c91b10f5be7fbc8e917242e9c5aa41740798",
+      "patches": [
+        {
+          "old": "Long summary that repeats background details.",
+          "new": "Concise summary."
+        },
+        {
+          "old": "Repeated navigation text for the same entry.",
+          "new": "Entry: README.md."
+        }
+      ]
+    }
+  ],
+  "guards": [
+    {
+      "kind": "heading",
+      "path": "current.md",
+      "value": "# History"
+    }
+  ],
+  "archive_proofs": []
+}

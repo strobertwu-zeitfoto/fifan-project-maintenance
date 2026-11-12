@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "project_root": "/absolute/path/to/directory-example",
+  "preset": "generic",
+  "scan_roots": [
+    "."
+  ],
+  "critical_paths": [
+    "README.md",
+    "decisions/closed.md"
+  ],
+  "reference_sources": [
+    {
+      "path": "README.md",
+      "role": "current"
+    },
+    {
+      "path": "decisions/closed.md",
+      "role": "current"
+    },
+    {
+      "path": "history/old-report.md",
+      "role": "historical"
+    }
+  ],
+  "classifications": [
+    {
+      "path": "README.md",
+      "role": "keep",
+      "reason": "Current entry must remain visible."
+    },
+    {
+      "path": "decisions/closed.md",
+      "role": "keep",
+      "reason": "Closure evidence must remain available."
+    },
+    {
+      "path": "runs/closed",
+      "role": "historical",
+      "reason": "Explicitly closed isolated fixture; original payload must be retained."
+    },
+    {
+      "path": "history",
+      "role": "historical",
+      "reason": "Retained historical report; not an active entry."
+    }
+  ],
+  "search": {
+    "exclude": [
+      "runs/closed",
+      "history"
+    ],
+    "vscode": true,
+    "watcher_exclude": true
+  },
+  "archive": {
+    "archive_root": "/absolute/path/to/directory-archive",
+    "records_dir": "/absolute/path/to/directory-records",
+    "candidates": [
+      "runs/closed"
+    ],
+    "require_no_open_handles": true
+  },
+  "budgets": {
+    "max_entries": 200000,
+    "max_seconds": 60,
+    "max_depth": 16,
+    "max_output_bytes": 8192,
+    "max_hash_entries": 20000,
+    "max_hash_bytes": 2147483648,
+    "max_hash_file_bytes": 536870912,
+    "max_artifact_bytes": 33554432,
+    "max_reference_bytes": 67108864,
+    "max_reference_file_bytes": 4194304,
+    "max_reference_files": 20000
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "active": [
+    "current.md"
+  ],
+  "views": [],
+  "reused_archives": [],
+  "new_archives": [
+    "archive/current.before.md"
+  ],
+  "external_roots": [],
+  "external_records": [],
+  "allow_absent": [
+    {
+      "role": "new_archives",
+      "path": "archive/current.before.md"
+    }
+  ]
+}

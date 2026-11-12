@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "allowed_external_roots": [],
+  "items": [
+    {
+      "source": {
+        "path": "current.md",
+        "selector": {
+          "kind": "heading",
+          "value": "History"
+        }
+      },
+      "archive": {
+        "path": "archive/current.before.md",
+        "selector": {
+          "kind": "heading",
+          "value": "History"
+        },
+        "reference_base": ".",
+        "classification_basis": "Agent verified this explicit history section is retained in the isolated snapshot; byte identity does not mean requirements expired."
+      }
+    }
+  ]
+}

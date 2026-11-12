@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "approval": {
+    "reference": "SYNTHETIC EXAMPLE ONLY: explicit quarantine approval for this batch",
+    "actions": [
+      "quarantine"
+    ]
+  },
+  "items": [
+    {
+      "source": "logs/closed.log",
+      "kind": "completed_log",
+      "reason": "Synthetic task completed; this accurate candidate is retired.",
+      "closure": {
+        "decision": "closed",
+        "reason": "Retained synthetic closure decision.",
+        "evidence": [
+          {
+            "path": "decisions/closed.md",
+            "sha256": "2b0fd46c1528aaf7c132c2ad8610dd395dfa02c7d3f9c04ea9473c52132ddf9a"
+          }
+        ]
+      },
+      "loss": {
+        "accepted": false,
+        "rebuildable": "Unknown",
+        "unique_evidence": false,
+        "description": "Quarantine only; original reproducibility is not claimed and irreversible loss is not yet approved."
+      },
+      "retained": [
+        "builds/current.pkg"
+      ],
+      "disposition": "quarantine"
+    }
+  ]
+}
