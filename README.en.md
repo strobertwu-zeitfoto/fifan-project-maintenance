@@ -160,7 +160,7 @@ sequenceDiagram
     S->>P: Check permissions, source fingerprints, and retention conditions
 
     alt Files changed or checks failed
-        S-->>A: Reject stale request; leave originals unchanged
+        S-->>A: Reject stale request, leave originals unchanged
         A-->>U: Explain blockers and material requiring reinspection
     else Preflight passed
         S-->>A: Return change preview and size baseline
@@ -169,7 +169,7 @@ sequenceDiagram
         S->>P: Apply precise changes
         S->>R: Save operation journal and recovery material
 
-        S->>P: Read back; verify retention conditions and references
+        S->>P: Read back, verify retention conditions and references
         S-->>A: Return text changes, archive growth, and verification results
         A-->>U: Report actual benefits and unconfirmed issues
     end
