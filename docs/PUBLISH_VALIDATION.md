@@ -11,6 +11,7 @@
 | Release packaging tests | **39 passed**. Deterministic source/Skill ZIPs, checksum coverage, wheel identity, exclusions, path/overwrite rejection and drift. These are additional targeted tests, not a newly claimed combined full-suite count. |
 | Runtime identity | All **48 Python modules** in the existing wheel are byte-identical to the validated source. No new runtime dependency or model service. |
 | Local installed CLI | Version and distribution metadata 1.5.0; **15 temporary CLI steps passed** after installation. |
+| Source ZIP installation | The final ZIP was extracted into a fresh temporary directory with a space in its path. Environment creation, installation, dependency check, executable launcher, Skill validation and **15 synthetic CLI steps passed**. |
 | Independent review | 1.5 maintenance changes received scoped static NoMustfix after fixes. Release tooling/content checks are recorded separately before publication. |
 | Public artifacts | Source ZIP, companion Skill ZIP, original Python wheel and SHA256SUMS. Environment, local logs, credentials, business data and machine-specific deployment driver are excluded. |
 
@@ -18,7 +19,9 @@ The wheel contains the CLI and pinned dependency declarations; it does not bundl
 
 ### Release verification
 
-Clean extraction/installation and asset checksum checks are completed before upload. Download availability is verified against the published Release; see the release record for the final asset list. The maintainer's project license remains unselected; [NOTICE](../NOTICE.md) and third-party notices are retained.
+The [v1.5.0 Release](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/tag/v1.5.0) is published and marked Latest. Source and Skill ZIPs, wheel and SHA256SUMS were downloaded back from GitHub and matched the tested local files byte for byte. All four public asset URLs returned HTTP200 at publication. The source ZIP/tag target commit is 9766eda99b56b634eebcfe6d8672d0bfeaae3b10; later publication-record edits do not move that tag.
+
+The standalone Skill includes the unchanged NOTICE, dependency document and third-party license files, so its declaration links resolve inside the extracted package. The maintainer's project license remains unselected; [NOTICE](../NOTICE.md) is retained. Checksums establish file equality; raw host logs remain private.
 
 ## Historical 1.4.2 public snapshot
 
