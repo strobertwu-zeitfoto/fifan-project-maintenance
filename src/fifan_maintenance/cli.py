@@ -67,6 +67,16 @@ def parser():
     add_directory_parser(commands)
     from .cleanup_cli import add_parser as add_cleanup_parser
     add_cleanup_parser(commands)
+    from .advisory_cli import add_parser as add_advisory_parser
+    add_advisory_parser(commands)
+    from .joint_cli import add_parser as add_joint_parser
+    add_joint_parser(commands)
+    review = commands.add_parser('reference-review', help='Deduplicate observed reference hints; does not authorize operations')
+    review.add_argument('--project', '--root', required=True)
+    review.add_argument('--request', required=True)
+    review.add_argument('--files', nargs='+', help='Exact source files allowed for SHA-bound hint classification')
+    review.add_argument('--output')
+    review.add_argument('--max-output-bytes', type=int, default=30720)
     def common(cmd, output=False):
         cmd.add_argument("--project", "--root", required=True)
         cmd.add_argument("--max-output-bytes", type=int, default=30720)
@@ -191,6 +201,42 @@ def main(argv=None):
     try:
         root = project_root(args.project)
         config = load_config(root)
+        if args.command == 'advisory':
+            from .advisory_cli import run as run_advisory
+            return run_advisory(root, config, args)
+        if args.command == 'joint-preview':
+            from .joint_cli import run as run_joint
+            return run_joint(root, config, args)
+        if args.command == 'reference-review':
+            from .directory_common import load_artifact, canonical_destination, _key, write_artifact
+            from .dynamic_review import review_pack
+            request_path = canonical_destination(Path(args.request).expanduser().absolute())
+            if args.output:
+                destination = canonical_destination(Path(args.output).expanduser().absolute())
+                if destination == root or root in destination.parents:
+                    raise ValueError('review output must be outside project')
+                if destination.exists() or _key(str(destination)) == _key(str(request_path)):
+                    raise ValueError('review output must be a new file distinct from its input')
+            texts, total = {}, 0
+            if len(args.files or []) > 128:
+                raise ValueError('too many review sources')
+            for name in args.files or []:
+                from .inventory import excluded
+                from .directory_common import validate_path_spelling, stat_entry, read_file
+                if excluded(name, config):
+                    raise ValueError('protected review source')
+                validate_path_spelling(root, name)
+                if stat_entry(root, name).st_nlink != 1:
+                    raise ValueError('aliased review source')
+                raw = read_file(root, name, min(1024 * 1024, 8 * 1024 * 1024 - total))
+                total += len(raw)
+                texts[name] = raw.decode('utf-8')
+            value = review_pack(load_artifact(request_path), texts=texts)
+            from .reading import _redact, bounded_json
+            if args.output:
+                write_artifact(destination, _redact(value))
+            print(bounded_json(value, args.max_output_bytes), end='')
+            return 0
         if args.command in {'cleanup', 'maintenance'}:
             from .cleanup_cli import run as run_cleanup
             return run_cleanup(root, config, args)
@@ -399,7 +445,7 @@ def main(argv=None):
     except (ValueError, OSError, UnicodeError, KeyError, TypeError) as error:
         from .diagnostics import diagnose
         diagnostic = diagnose(error)
-        diagnostic["project_writes"] = 0 if args.command in {"check", "inventory", "read", "compare", "report", "preview", "profile", "history", "archive-coverage"} or args.command == "session" and args.action != "recover" else "Unknown"
+        diagnostic["project_writes"] = 0 if args.command in {"check", "inventory", "read", "compare", "report", "preview", "profile", "history", "archive-coverage", "advisory", "joint-preview", "reference-review"} or args.command == "session" and args.action != "recover" else "Unknown"
         if args.command == 'directory' and (args.directory_action in {'census', 'impact', 'search-preview', 'archive-preview', 'locate', 'restore-preview', 'verify'} or args.directory_action == 'workflow' and args.phase == 'inspect'):
             diagnostic['project_writes'] = 0
         if args.command == 'cleanup' and args.cleanup_action in {'inspect', 'preview', 'verify', 'restore-preview', 'purge-preview', 'history'}:

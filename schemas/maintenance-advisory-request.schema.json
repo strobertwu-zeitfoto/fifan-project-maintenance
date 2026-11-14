@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "maintenance-advisory-request.schema.json",
+  "title": "Explicit offline advisory request",
+  "description": "External request. All source paths are exact project-relative files, bound to current SHA-256. Requirements are single-line literal fragments, not semantic assertions. Hard runtime budgets: 256 KiB request, 128 files, 1 MiB each, 8 MiB cumulative project body IO including final rereads, 256 requirements, 10 seconds. Strict IO disables the extra growth-probe byte; post-read metadata checks still reject growth. Successful body_bytes_read reports actual IO. No receipt regeneration.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_root",
+    "documents"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "project_root": {
+      "type": "string",
+      "pattern": "^/"
+    },
+    "documents": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "baseline",
+          "candidate",
+          "requirements"
+        ],
+        "properties": {
+          "baseline": {
+            "$ref": "#/$defs/file"
+          },
+          "candidate": {
+            "$ref": "#/$defs/file"
+          },
+          "requirements": {
+            "type": "array",
+            "maxItems": 256,
+            "items": {
+              "$ref": "#/$defs/requirement"
+            }
+          }
+        }
+      }
+    },
+    "bindings": {
+      "type": "array",
+      "maxItems": 128,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "file",
+          "source"
+        ],
+        "properties": {
+          "file": {
+            "$ref": "#/$defs/file"
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "search": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "before",
+        "after"
+      ],
+      "properties": {
+        "before": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "$ref": "#/$defs/file"
+          }
+        },
+        "after": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "$ref": "#/$defs/file"
+          }
+        }
+      }
+    },
+    "recovery": {
+      "type": "array",
+      "maxItems": 128,
+      "items": {
+        "$ref": "#/$defs/file"
+      }
+    }
+  },
+  "$defs": {
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "text"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]{1,80}$"
+        },
+        "kind": {
+          "enum": [
+            "task_id",
+            "number",
+            "negation",
+            "pending",
+            "text"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^[^\\r\\n]+$"
+        }
+      }
+    }
+  }
+}

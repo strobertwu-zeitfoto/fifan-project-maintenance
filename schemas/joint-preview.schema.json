@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fifan read-only file and archive joint projection",
+  "type": "object",
+  "required": ["format", "schema_version", "kind", "status", "binding", "projected_impact", "navigation", "executable", "execution_order", "recovery_steps", "fingerprint"],
+  "properties": {
+    "format": {"const": "fifan-joint-preview"},
+    "schema_version": {"const": 1},
+    "kind": {"const": "joint-preview"},
+    "status": {"enum": ["Preview", "Blocked", "Unknown"]},
+    "executable": {"const": false},
+    "binding": {
+      "type": "object",
+      "required": ["project_root", "profile_sha256", "config_sha256", "file_plan_sha256", "archive_request_sha256", "overlay_sha256", "impact_material_sha256", "manifests", "roots"]
+    },
+    "projected_impact": {"type": "object"},
+    "navigation": {"type": "object", "required": ["checked", "issues", "targets", "hash_usage"]},
+    "execution_order": {"type": "array", "items": {"type": "string"}, "minItems": 4},
+    "recovery_steps": {"type": "array", "items": {"type": "string"}, "minItems": 4},
+    "fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "description": "Preview describes a hypothetical final navigation state only. It cannot be passed to directory apply, does not authorize mutation, and requires original native file apply followed by a fresh actual-state directory archive-preview/apply."
+}

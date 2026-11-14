@@ -14,18 +14,22 @@ def add_parser(commands):
     cleanup = commands.add_parser('cleanup', help='Explicit disposable-artifact cleanup')
     actions = cleanup.add_subparsers(dest='cleanup_action', required=True)
     for name in ('inspect', 'preview', 'apply', 'verify', 'restore-preview',
-                 'restore', 'purge-preview', 'purge', 'recover', 'history'):
+                 'restore', 'purge-preview', 'purge', 'recover', 'history', 'reference-estimate', 'reference-advance'):
         cmd = actions.add_parser(name)
         _common(cmd)
-        if name in {'inspect', 'preview'}:
+        if name in {'inspect', 'preview', 'reference-estimate', 'reference-advance'}:
             cmd.add_argument('--request', required=name == 'preview')
         if name in PREVIEWS or name in {'apply', 'restore', 'purge'}:
             cmd.add_argument('--plan', required=True)
         if name in {'verify', 'restore-preview', 'purge-preview', 'recover'}:
             cmd.add_argument('--journal', required=True)
-        if name != 'inspect':
+        if name == 'reference-advance':
+            cmd.add_argument('--resume')
+            cmd.add_argument('--reference-fingerprint')
+            cmd.add_argument('--max-batches', type=int, default=1)
+        if name not in {'inspect', 'reference-estimate', 'reference-advance'}:
             cmd.add_argument('--records-dir', required=True)
-        if name not in {'inspect', 'history'}:
+        if name not in {'inspect', 'history', 'reference-estimate', 'reference-advance'}:
             cmd.add_argument('--quarantine-root', required=True)
         if name in {'apply', 'restore', 'purge', 'recover'}:
             cmd.add_argument('--approve-plan', required=name != 'recover')
@@ -169,6 +173,12 @@ def run(root, config, args):
                           after=after, after_archive_root=args.after_archive_root)
         return _emit(profile, args, result)
     action = args.cleanup_action
+    if action in {'reference-estimate', 'reference-advance'}:
+        result = policy.reference_inspection(profile, request,
+            resume=artifact('resume') if action == 'reference-advance' else None,
+            expected_fingerprint=getattr(args, 'reference_fingerprint', None),
+            estimate_only=action == 'reference-estimate', max_batches=getattr(args, 'max_batches', 1))
+        return _emit_reference(profile, args, result)
     if action == 'inspect':
         return _emit(profile, args, policy.inspect(profile, request))
     if action == 'history':
@@ -201,3 +211,17 @@ def run(root, config, args):
     if action in {'apply', 'restore', 'purge', 'recover'}:
         result = _summary(result)
     return _emit(profile, args, result)
+
+
+def _emit_reference(profile, args, result):
+    # Persist the exact sealed receipt; only the public summary is redacted.
+    from copy import copy
+    from .directory_common import write_artifact
+    if args.output:
+        write_artifact(args.output, result, limit=profile.budgets['max_artifact_bytes'])
+    public = {key: result[key] for key in ('kind', 'status', 'complete', 'fingerprint', 'batch_count',
+              'next_batch', 'inspection_only', 'mutation_authorized', 'usage', 'estimated_parse_bytes',
+              'body_bytes_read', 'reference_files', 'elapsed_seconds') if key in result}
+    output_args = copy(args)
+    output_args.output = None
+    return _emit(profile, output_args, public)

@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "project_root": "/absolute/synthetic/project",
+  "documents": [
+    {
+      "baseline": {
+        "path": "README.md",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "candidate": {
+        "path": "README.candidate.md",
+        "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "requirements": [
+        {
+          "id": "task-42",
+          "kind": "task_id",
+          "text": "TASK-42"
+        },
+        {
+          "id": "keep-negation",
+          "kind": "negation",
+          "text": "Do not delete source assets"
+        },
+        {
+          "id": "limit",
+          "kind": "number",
+          "text": "17 files"
+        },
+        {
+          "id": "pending",
+          "kind": "pending",
+          "text": "Manual verification pending"
+        }
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "file": {
+        "path": "manifest.json",
+        "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+      },
+      "source": "README.md"
+    }
+  ],
+  "search": {
+    "before": [
+      {
+        "path": "README.md",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    ],
+    "after": [
+      {
+        "path": "README.candidate.md",
+        "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    ]
+  },
+  "recovery": [
+    {
+      "path": "recovery.json",
+      "sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+    }
+  ]
+}

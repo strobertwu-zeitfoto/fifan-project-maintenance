@@ -650,7 +650,8 @@ def _check_references(profile, record, archive):
             if path in bindings and bindings[path] != sha:
                 raise DirectoryError('ARTIFACT_INVALID', 'conflicting closure evidence fingerprints')
             bindings[path] = sha
-    budget = common.HashBudget(common.reference_hash_limits(profile))
+    from .reference_batches import ReferenceHasher
+    hasher = ReferenceHasher(profile)
     for path, expected in bindings.items():
         common.relative(path)
         if common.protected(profile, path):
@@ -666,7 +667,7 @@ def _check_references(profile, record, archive):
                 break
         if path not in profile.data.get('streaming_references', []) and common.stat_entry(base, target).st_size > profile.budgets['max_reference_file_bytes']:
             raise DirectoryError('BUDGET_EXHAUSTED', 'nonstream reference exceeds per-file limit')
-        item = common.stream_reference_hash(profile, target, budget, reference_path=path, root=base)
+        item = hasher.read(target, reference_path=path, root=base)
         if item['sha256'] != expected:
             raise DirectoryError('SOURCE_CHANGED', 'impact reference or closure evidence changed')
 
@@ -990,7 +991,8 @@ def _check_current_reference_set(profile, record, archive, phase_budget=None, pe
         common.validate_path_spelling(base, rel)
         info = common.stat_entry(base, rel)
         if stat.S_ISREG(info.st_mode):
-            if len(observed) >= limits['max_reference_files']:
+            file_limit = profile.data.get('reference_batching', {}).get('max_total_files', limits['max_reference_files'])
+            if len(observed) >= file_limit:
                 raise DirectoryError('BUDGET_EXHAUSTED', 'current reference file count exhausted')
             observed.add(path)
             return

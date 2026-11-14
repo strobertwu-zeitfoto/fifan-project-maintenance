@@ -1,5 +1,7 @@
 # Fifan Project Maintenance
 
+Feature version **1.5.0** adds opt-in bounded reference batches/resume, reference review packs, explicit generated-build disposal, read-only joint navigation/archive previews, and literal preservation/binding advice. See [upgrade guide](docs/UPGRADE_1_5.md), [changelog](docs/CHANGELOG.md), and [validation scope](docs/VALIDATION.md). Legacy commands and profiles retain their default behavior.
+
 <img src="docs/images/mascot.png" width="192" height="128" alt="An AI file-folder mascot wearing a nurse cap with a red cross" />
 
 **Project maintenance for Vibe Coding. Automation scripts handle most repetitive checks and mechanical file operations.**
@@ -7,6 +9,19 @@
 Let AI read less unrelated material and focus on development.
 
 [简体中文](README.md) · English · [www.fifanlabs.com](https://www.fifanlabs.com)
+
+## Download 1.5.0
+
+| Download | Contents |
+| --- | --- |
+| **[Full toolkit ZIP (recommended)](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.0/fifan-project-maintenance-1.5.0.zip)** | CLI source, Skill, documentation, examples and tests; Python/environment not bundled |
+| [Companion Skill ZIP](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.0/fifan-project-maintenance-skill-1.5.0.zip) | Agent guidance; requires the CLI and its actual local path |
+| [Python wheel](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.0/fifan_project_maintenance-1.5.0-py3-none-any.whl) | For an existing Python environment; installing dependencies may need network access |
+| [SHA-256 checksums](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.0/SHA256SUMS) | Verify the three files above |
+
+**[Installation](INSTALL.md#english-quick-start)** · [Release notes](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/tag/v1.5.0) · [Latest release](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/latest)
+
+Recommended: macOS and Python 3.12. This is a local command-line toolkit; an Agent with local execution can install and operate it. See [validation scope](docs/VALIDATION.md).
 
 ## What does this do for me?
 
@@ -217,7 +232,7 @@ Installation may require network access; project checks run offline. The tool do
 ### Platform and safety
 
 - Python3.9 minimum; Python3.12 recommended/default. Validated on Intel macOS with3.9.6,3.12.14, and3.15.2.
-- Some controlled operations use macOS-specific APIs. Windows, Linux, Apple Silicon, and free-threaded Python have not been validated.
+- Some controlled operations use macOS-specific APIs. Version 1.5.0 has synthetic regression evidence on Apple Silicon/Python 3.12 (see Validation); Windows, Linux, free-threaded Python and real business-project acceptance remain unvalidated.
 - Inspection is read-only by default. Changes, archiving, and cleanup require explicit scope and authorization. Permanent deletion is irreversible.
 - Directory descriptors, fingerprints, and cooperative locks do not prevent every concurrent external write; pause other editors during changes.
 - Keep reports, plans, and recovery material outside the target project as required; protect project text and credentials.

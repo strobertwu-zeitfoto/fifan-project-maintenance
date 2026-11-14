@@ -8,6 +8,19 @@ AI 少翻文件，把 token 留给开发。
 
 简体中文 · [English](README.en.md) · [官网 www.fifanlabs.com](https://www.fifanlabs.com)
 
+## 下载 1.5.0
+
+| 下载 | 内容 |
+| --- | --- |
+| **[完整工具包 ZIP（推荐）](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.0/fifan-project-maintenance-1.5.0.zip)** | CLI 源码、Skill、说明、示例及测试；不含 Python 或虚拟环境 |
+| [配套 Skill ZIP](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.0/fifan-project-maintenance-skill-1.5.0.zip) | 给 Agent 使用的引导；仍需安装 CLI 并填入实际入口 |
+| [Python wheel](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.0/fifan_project_maintenance-1.5.0-py3-none-any.whl) | 适合已有 Python 环境的用户，依赖安装可能需要联网 |
+| [SHA-256 校验文件](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.0/SHA256SUMS) | 校验上述三个文件 |
+
+**[安装步骤](INSTALL.md)** · [1.5.0 发行说明](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/tag/v1.5.0) · [查看最新版本](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/latest)
+
+推荐 macOS + Python 3.12。这是本地命令行工具；Agent 可代为安装和使用。平台验证范围见 [验证说明](docs/VALIDATION.md)。
+
 ## 先看看能帮你什么
 
 | 给项目做体检 | 给文档减减肥 | 脚本先做，AI再看 |
@@ -184,6 +197,10 @@ sequenceDiagram
 
 ### 安装
 
+当前功能版本 **1.5.0**：新增分批引用/续办、动态提示复核包、明确生成物清理合同、导航与归档联合预演及字面保留检查。见 [1.5 使用说明](docs/UPGRADE_1_5.md)、[版本记录](docs/CHANGELOG.md) 与 [工程计划](docs/ENGINEERING_PLAN.md)。旧命令/profile默认行为保留。
+
+下载完整工具包并解压，或克隆本仓库；完整步骤及独立 Skill 安装见 [INSTALL.md](INSTALL.md)。
+
 推荐Python3.12；进入本仓库目录后：
 
 ```bash
@@ -213,7 +230,7 @@ python3.12 -m venv .venv
 ### 平台与安全
 
 - 最低兼容Python3.9，推荐并默认3.12；已验证Intel macOS的3.9.6、3.12.14、3.15.2。
-- 部分受控操作使用macOS专用接口；不宣称Windows、Linux、Apple Silicon或自由线程Python已经通过验收。
+- 部分受控操作使用macOS专用接口；1.5.0已在Apple Silicon / Python3.12上完成临时样例回归，范围见[验证记录](docs/VALIDATION.md)。不宣称真实工程、Windows、Linux或自由线程Python通过验收。
 - 默认检查不改目标。修改、归档与删除按明确范围和授权执行；永久删除不可恢复。
 - 目录FD、文件指纹与协作锁保留；其他编辑者仍须暂停，不能保证阻止所有并发外部写入。
 - 报告、计划和恢复材料按要求放在目标工程外，不上传项目原文或凭据。

@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Bounded reference inspection session",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "kind",
+    "binding",
+    "status",
+    "complete",
+    "batches",
+    "next_batch",
+    "batch_count",
+    "fingerprint",
+    "inspection_only",
+    "mutation_authorized",
+    "usage",
+    "cumulative_elapsed_seconds"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "kind": {
+      "const": "reference-session"
+    },
+    "status": {
+      "enum": [
+        "Passed",
+        "Partial"
+      ]
+    },
+    "complete": {
+      "type": "boolean"
+    },
+    "binding": {
+      "type": "object"
+    },
+    "batches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "index",
+          "paths",
+          "facts",
+          "fingerprint",
+          "reference_bytes_read",
+          "elapsed_seconds",
+          "reference_bytes_charged"
+        ]
+      }
+    },
+    "next_batch": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "batch_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "inspection_only": {
+      "const": true
+    },
+    "mutation_authorized": {
+      "const": false
+    },
+    "usage": {
+      "type": "object"
+    },
+    "cumulative_elapsed_seconds": {
+      "type": "number",
+      "minimum": 0
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,5 +1,19 @@
 # 验证与限制 / Validation and limitations
 
+## 1.5.0 验证（2026-11-14）
+
+Apple Silicon macOS、Python 3.12.16、固定依赖，维护功能完整回归 **1104 passed / 105.62s**。验证仅使用临时合成工程，覆盖分批/续办/漂移、原生归档/恢复、生成物隔离/恢复/purge、联合预演和字面 advisory。独立静态复核最终为限定 NoMustfix；运行包48个Python模块与已测源码、wheel及独立环境一致。
+
+复现命令（在源码根，先按开发测试说明安装固定测试依赖）：
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 FIFAN_MAINTAIN_RUNTIME=312 \
+  FIFAN_MAINTAIN_TOOL="$PWD/.venv/bin/fifan-maintain" \
+  .venv/bin/python -B -m pytest -q -p no:cacheprovider
+```
+
+本机部署另有17个临时场景，安装后15个临时CLI步骤通过；本机部署驱动、完整日志和恢复材料不包含在公开包中。这些本机结果不等同真实业务工程、所有平台或用户接受。下载产物与发布辅助测试见 [公开验证](PUBLISH_VALIDATION.md)。
+
 Version1.4.2 retains Python>=3.9 compatibility. The project launcher recommends/defaults toPython3.12; the maintainer's validated interpreters are3.9.6,3.12.14,3.15.2 on Intel macOS.
 
 ## Existing development evidence
@@ -14,7 +28,7 @@ These raw historical artifacts contain local paths and project data, so they are
 
 ## Important limits
 
-- Some descriptor/canonical-path and exclusive-rename operations are macOS-specific. Windows/Linux/Apple Silicon/free-threaded builds have not been validated.
+- Some descriptor/canonical-path and exclusive-rename operations are macOS-specific. Windows/Linux/free-threaded builds remain unvalidated. Apple Silicon evidence is limited to the 1.5.0 synthetic suite above, not business-project acceptance.
 - Source/config existence and an exit code do not alone prove healthy content. Inspect coverage, findings, truncation, and Unknown/Not run states.
 - Cooperative locks do not stop every external writer; pause other editors for changes. Occupancy checks are samples.
 - Content backups do not recreate original inode history. Permanent purge is irreversible and requires its own explicit authorization.
@@ -22,3 +36,7 @@ These raw historical artifacts contain local paths and project data, so they are
 - File-operation checks do not replace application runtime tests or user acceptance.
 
 This tool does not execute target-project scripts/plugins, call models, or launch Unity. Agent software used to interpret results has its own permissions and usage costs.
+
+## 安装核验边界
+
+CLI与包元数据应同时为1.5.0；安装后先在临时样例检查。Skill需配置实际入口，不能凭文件存在判断已加载。旧editable环境回退须与原源文件配对，不应仅切换环境。平台及历史候选的适用边界仍按上文保留。

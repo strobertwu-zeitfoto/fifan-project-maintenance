@@ -66,8 +66,10 @@ def safe_path(root: Path, rel: str) -> Path:
     return current
 
 
-def read_bytes(root: Path, rel: str, limit: int) -> bytes:
+def read_bytes(root: Path, rel: str, limit: int, *, probe: bool = True) -> bytes:
     """Read a bounded, stable regular file using non-following directory handles."""
+    if type(probe) is not bool:
+        raise ValueError("invalid read probe policy")
     parts = relative_parts(rel)
     nofollow = getattr(os, "O_NOFOLLOW", None)
     if nofollow is None or os.open not in os.supports_dir_fd:
@@ -94,7 +96,9 @@ def read_bytes(root: Path, rel: str, limit: int) -> bytes:
             if authorize_read(root, rel, before.st_size):
                 limit = min(limit, before.st_size)
             chunks = []
-            remaining = limit + 1
+            # Strict callers bound physical IO even on concurrent-growth failure.
+            # The after-fstat check still rejects growth without an extra probe.
+            remaining = limit + 1 if probe else limit
             while remaining:
                 block = os.read(file_fd, min(remaining, 65536))
                 if not block:

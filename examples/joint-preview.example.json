@@ -1,0 +1,12 @@
+{
+  "command_template": "fifan-maintain joint-preview --project PROJECT --profile DIRECTORY_PROFILE_JSON --file-plan ORIGINAL_FILE_PLAN_JSON --request ARCHIVE_REQUEST_JSON --archive-root AUTHORIZED_ARCHIVE_ROOT --records-dir AUTHORIZED_RECORDS_ROOT --output EXTERNAL_JOINT_REPORT_JSON",
+  "input_contract": "An existing fingerprint-bound native file plan changing explicitly declared reference files, plus an explicit directory archive request and runtime-authorized external roots.",
+  "interpretation": "Preview means final scoped navigation can be projected; it is not a native archive plan or permission to apply.",
+  "execution_order": [
+    "Validate the unchanged candidate and original inputs.",
+    "Apply the original file plan with native file apply and retain its journal.",
+    "Create and review a fresh native directory archive-preview against the actual post-file state.",
+    "Apply that fresh native archive plan and retain its own journal."
+  ],
+  "recovery_order": "Resume failed native operation using its real journal. To roll back a completed archive, restore the archive first, then recover the file journal. Never pass the joint projection to native directory apply."
+}

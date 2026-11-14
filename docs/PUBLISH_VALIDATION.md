@@ -1,4 +1,26 @@
-# Public snapshot validation / 公开候选验证
+# Publication validation / 公开版本验证
+
+
+## 1.5.0 — 2026-11-14
+
+本版本提供 GitHub Release 下载。维护功能源码与已验证的本机1.5.0相同；本次仅新增发布打包辅助脚本、专项测试及公开文档，不改变48个维护运行模块。
+
+| Check | Result and scope |
+| --- | --- |
+| Maintenance regression | **1104 passed / 105.62s**, Apple Silicon macOS, Python 3.12.16, fixed dependencies, synthetic projects only. Existing valid evidence is reused; no claim of a new GitHub CI run. |
+| Release packaging tests | **39 passed**. Deterministic source/Skill ZIPs, checksum coverage, wheel identity, exclusions, path/overwrite rejection and drift. These are additional targeted tests, not a newly claimed combined full-suite count. |
+| Runtime identity | All **48 Python modules** in the existing wheel are byte-identical to the validated source. No new runtime dependency or model service. |
+| Local installed CLI | Version and distribution metadata 1.5.0; **15 temporary CLI steps passed** after installation. |
+| Independent review | 1.5 maintenance changes received scoped static NoMustfix after fixes. Release tooling/content checks are recorded separately before publication. |
+| Public artifacts | Source ZIP, companion Skill ZIP, original Python wheel and SHA256SUMS. Environment, local logs, credentials, business data and machine-specific deployment driver are excluded. |
+
+The wheel contains the CLI and pinned dependency declarations; it does not bundle Python, the full source documentation or the Skill. See [INSTALL](../INSTALL.md). Source/Skill ZIP metadata and ordering are deterministic; archives do not contain .git or virtual environments. Raw host-specific logs remain private. Filesystem guards and automated tests do not authorize maintenance of a particular real project.
+
+### Release verification
+
+Clean extraction/installation and asset checksum checks are completed before upload. Download availability is verified against the published Release; see the release record for the final asset list. The maintainer's project license remains unselected; [NOTICE](../NOTICE.md) and third-party notices are retained.
+
+## Historical 1.4.2 public snapshot
 
 Validated on 2026-11-12 for version **1.4.2**, using **Python 3.12.14 on Intel macOS (x86_64)**. This document describes the prepared public source snapshot; repository visibility and publication are separate checks.
 
@@ -22,11 +44,11 @@ The wheel is validation evidence, not a bundled downloadable release. Raw local 
 
 ## Boundaries
 
-- **995 is the current public-suite result.** The historical 1007-test development run described in [VALIDATION](VALIDATION.md) used a different candidate and included private retirement-helper tests. It is not the count for this public snapshot.
+- **995 is the historical 1.4.2 public-suite result.** The historical 1007-test development run described in [VALIDATION](VALIDATION.md) used a different candidate and included private retirement-helper tests. It is not the count for this public snapshot.
 - This public snapshot has not received a new full-suite run on Python 3.9 or 3.15. Historical compatibility evidence remains scoped to its original candidates.
-- Windows, Linux, Apple Silicon, free-threaded Python, and other Agent products have not been validated. Some guarded filesystem operations use macOS-specific APIs.
+- For that 1.4.2 snapshot, Windows, Linux, Apple Silicon, free-threaded Python, and other Agent products had not been validated. The 1.5.0 Apple Silicon scope is listed above. Some guarded filesystem operations use macOS-specific APIs.
 - Automated fixture tests do not establish safe authorization for a particular real project, prevent every concurrent external write, or replace application runtime tests and user acceptance. Permanent deletion is irreversible.
 - The project's own source and generated illustrations have **no selected project license**. Third-party notices remain included; see [NOTICE](../NOTICE.md) and [DEPENDENCIES](DEPENDENCIES.md).
-- No tag, release, package-index publication, or website deployment is covered by these results.
+- Those historical validation results did not cover tag, release, package-index publication or website deployment; the current 1.5.0 publication is recorded separately above.
 
 中文摘要：本次公开源码候选在独立 Python 3.12.14 环境通过 995 项测试；42 个运行模块保持原始字节。旧版测试数不作为本次成绩，其他平台及本次未重跑的 Python 版本不扩大宣称。公开可见性和网页图文需在上传后另行核实。

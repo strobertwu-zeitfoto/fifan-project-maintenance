@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fifan-project-maintenance"
-version = "1.4.2"
+version = "1.5.0"
 description = "Local project health checks and guarded maintenance operations"
 requires-python = ">=3.9"
 dependencies = ["markdown-it-py==3.0.0", "mdurl==0.1.2", "PyYAML==6.0.3", "tomli==2.2.1; python_version < '3.11'"]

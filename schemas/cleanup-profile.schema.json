@@ -89,13 +89,32 @@
               "completed_log",
               "disposable_output"
             ]
+          },
+          "disposal_policy": {
+            "const": "generated_artifact"
           }
         },
         "required": [
           "path",
           "kind"
         ],
-        "additionalProperties": false
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "required": [
+                "disposal_policy"
+              ]
+            },
+            "then": {
+              "properties": {
+                "kind": {
+                  "const": "old_build"
+                }
+              }
+            }
+          }
+        ]
       }
     },
     "rules": {
@@ -239,6 +258,38 @@
       },
       "required": [],
       "additionalProperties": false
+    },
+    "reference_batching": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_batches",
+        "max_total_bytes",
+        "max_total_files",
+        "max_total_seconds"
+      ],
+      "properties": {
+        "max_batches": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "max_total_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8589934592
+        },
+        "max_total_files": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        },
+        "max_total_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3600
+        }
+      }
     }
   },
   "required": [

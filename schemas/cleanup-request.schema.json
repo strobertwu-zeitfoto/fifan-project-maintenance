@@ -113,7 +113,22 @@
             "uniqueItems": true
           },
           "build": {
-            "$ref": "cleanup-profile.schema.json#/$defs/build"
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "platform": {
+                "$ref": "cleanup-profile.schema.json#/$defs/text"
+              },
+              "branch": {
+                "$ref": "cleanup-profile.schema.json#/$defs/text"
+              },
+              "configuration": {
+                "$ref": "cleanup-profile.schema.json#/$defs/text"
+              },
+              "purpose": {
+                "$ref": "cleanup-profile.schema.json#/$defs/text"
+              }
+            }
           },
           "disposition": {
             "enum": [
@@ -128,6 +143,22 @@
               "$ref": "cleanup-profile.schema.json#/$defs/dynamic_resolution"
             },
             "maxItems": 100000
+          },
+          "generated_disposal": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "generated_only",
+              "reason"
+            ],
+            "properties": {
+              "generated_only": {
+                "const": true
+              },
+              "reason": {
+                "$ref": "cleanup-profile.schema.json#/$defs/text"
+              }
+            }
           }
         },
         "required": [
@@ -142,16 +173,55 @@
         "allOf": [
           {
             "if": {
+              "required": [
+                "generated_disposal"
+              ]
+            },
+            "then": {
               "properties": {
                 "kind": {
                   "const": "old_build"
+                },
+                "loss": {
+                  "properties": {
+                    "accepted": {
+                      "const": true
+                    },
+                    "unique_evidence": {
+                      "const": false
+                    }
+                  }
                 }
               }
             },
-            "then": {
-              "required": [
-                "build"
-              ]
+            "else": {
+              "if": {
+                "properties": {
+                  "kind": {
+                    "const": "old_build"
+                  }
+                },
+                "required": [
+                  "kind"
+                ]
+              },
+              "then": {
+                "required": [
+                  "build"
+                ],
+                "properties": {
+                  "build": {
+                    "$ref": "cleanup-profile.schema.json#/$defs/build"
+                  }
+                }
+              },
+              "else": {
+                "properties": {
+                  "build": {
+                    "$ref": "cleanup-profile.schema.json#/$defs/build"
+                  }
+                }
+              }
             }
           }
         ]

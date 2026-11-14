@@ -261,7 +261,12 @@ def _ref_role(profile, path):
 
 
 class _References:
-    def __init__(self, profile, sources=()):
+    def __init__(self, profile, sources=(), *, reference_overlay=None):
+        self.reference_overlay = dict(reference_overlay or {})
+        for path, raw in self.reference_overlay.items():
+            dc.relative(path)
+            if raw is not None and not isinstance(raw, bytes):
+                raise dc.DirectoryError('INVALID_INPUT', 'reference overlay requires bytes or None')
         self.profile = profile
         self.sources = sources
         self.analysis = {}
@@ -273,6 +278,7 @@ class _References:
         self.read_bytes_unknown = False
         self.links = {}
         self.cache_keys = {}
+        self.batch_coverage = None
 
     def read(self, path):
         if time.monotonic() - self.walk.started >= self.profile.budgets['max_seconds']:
@@ -302,7 +308,7 @@ class _References:
         if not stat.S_ISREG(info.st_mode):
             raise dc.DirectoryError('REFERENCE_NOT_REGULAR')
         remaining = limits['max_reference_bytes'] - self.bytes
-        streaming = path in self.profile.data.get('streaming_references', [])
+        streaming = path in self.profile.data.get('streaming_references', []) and path not in self.reference_overlay
         limit = remaining if streaming else min(limits['max_reference_file_bytes'], remaining)
         if info.st_size > limit:
             raise dc.DirectoryError('BUDGET_EXHAUSTED')
@@ -323,6 +329,13 @@ class _References:
             self.failed_read = True  # Bound a growth probe to one byte for the whole run.
             self.read_bytes_unknown |= raw is None
             raise
+        if path in self.reference_overlay:
+            candidate = self.reference_overlay[path] or b''
+            if (len(candidate) > limits['max_reference_file_bytes']
+                    or len(candidate) > limits['max_reference_bytes'] - self.bytes):
+                raise dc.DirectoryError('BUDGET_EXHAUSTED')
+            self.bytes += len(candidate)
+            raw = candidate
         # Keep original bytes only inside the bounded run; report never includes them.
         value = {'sha256': hashlib.sha256(raw).hexdigest(), 'raw': raw, 'bytes': len(raw), 'role': _ref_role(self.profile, path)}
         self.cache[path] = value
@@ -422,6 +435,10 @@ class _References:
 
     def load_all(self):
         declarations = self.profile.data['reference_sources']
+        if 'reference_batching' in self.profile.data:
+            from .reference_batches import load_all
+            load_all(self, [item['path'] for item in declarations])
+            return
         for path, _ in self.walk.walk([item['path'] for item in declarations]):
             try:
                 self.read(path)
@@ -431,7 +448,7 @@ class _References:
             self.walk.gap('.', 'REFERENCE_SCOPE_EMPTY')
 
     def coverage(self):
-        return {**self.walk.coverage(), 'complete': self.walk.complete and not self.failures,
+        return {**self.walk.coverage(), **({'batching': self.batch_coverage} if self.batch_coverage else {}), 'complete': self.walk.complete and not self.failures,
                 'reference_files_attempted': self.files, 'reference_bytes_charged': self.bytes,
                 'reference_bytes_read': None if self.read_bytes_unknown else self.returned_bytes,
                 'reference_bytes_read_lower_bound': self.returned_bytes,
@@ -486,6 +503,8 @@ def _references_to(reader, path, source):
 
 
 def _scan_text(reader, path, source, text, *, json_strings=True, dynamics=True):
+    from .dynamic_review import classify, literal_positions, unresolved_compact_paths
+    literals = literal_positions(path, text) if dynamics and _DYNAMIC.search(text) else set()
     value = reader.cache[path]
     if path not in reader.links:
         # Shared parser does not execute plugins or render project content.
@@ -599,6 +618,9 @@ def _scan_text(reader, path, source, text, *, json_strings=True, dynamics=True):
                     if _within(target, source):
                         record(number, 'relative-literal')
         for match in (_DYNAMIC.finditer(line) if dynamics else ()):
+            hint = classify(path, text, number, match.start() + 1, literals=literals, line_text=line)
+            if hint['literal_only']:
+                continue  # Static path contents remain checked by lexical rules above.
             unknown.append({'path': path, 'line': number, 'sha256': value['sha256'],
                             'column': match.start() + 1,
                             'line_sha256': hashlib.sha256(line.rstrip('\r\n').encode('utf-8')).hexdigest(),
@@ -607,6 +629,8 @@ def _scan_text(reader, path, source, text, *, json_strings=True, dynamics=True):
         if time.monotonic() - reader.walk.started >= reader.profile.budgets['max_seconds']:
             unknown.append({'path': path, 'reason_code': 'BUDGET_EXHAUSTED'})
             break
+    if dynamics and path.lower().endswith(('.md', '.markdown')):
+        unknown.extend(unresolved_compact_paths(path, text, value['sha256']))
     return found, unknown
 
 
@@ -678,10 +702,10 @@ def _sha_string(value):
     return isinstance(value, str) and bool(re.fullmatch(r'[0-9a-f]{64}', value))
 
 
-def impact(profile, request):
+def impact(profile, request, *, reference_overlay=None):
     dc.validate_profile_root(profile)
     batches = _request_batches(profile, request)
-    reader = _References(profile, tuple(batch['source'] for batch in batches))
+    reader = _References(profile, tuple(batch['source'] for batch in batches), reference_overlay=reference_overlay)
     reader.load_all()
     results = []
     artifact_bytes = 8192
@@ -832,7 +856,7 @@ def impact(profile, request):
     # This material is stable across scans; timing/counters are not proof identity.
     material = {'profile_sha256': profile.sha256, 'request_sha256': dc.digest(request),
                 'batches': [{key: item[key] for key in ('source', 'destination', 'eligible', 'status', 'source_identity', 'closure', 'reference_fingerprints', 'historical_overrides', 'known_absent', 'current_dependencies', 'historical_dependencies', 'unknowns', 'blockers')} for item in results]}
-    value = {'schema_version': 1, 'kind': 'directory-impact', 'project_root': str(profile.root), 'profile_sha256': profile.sha256,
+    value = {'schema_version': 1, 'kind': 'directory-impact-projection' if reference_overlay is not None else 'directory-impact', 'project_root': str(profile.root), 'profile_sha256': profile.sha256,
                     'request_sha256': dc.digest(request), 'status': status, 'batches': results, 'unchecked_batches': unchecked,
                     'coverage': {**reader.coverage(), 'complete': not unchecked and reader.coverage()['complete'] and all(item['coverage']['complete'] for item in results)},
                     'material': material, 'material_sha256': dc.digest(material), 'eligibility_scope': 'closure/classification/declared references only; archive manifest and runtime safety checks remain required',

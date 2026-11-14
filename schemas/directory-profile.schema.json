@@ -231,6 +231,38 @@
         "pattern": "\\.([lL][oO][gG]|[tT][xX][tT])$"
       },
       "description": "Explicit authorized plain-text files scanned in 64KiB blocks with <=1MiB physical lines; complete file still charged to max_reference_bytes. Ordinary per-file limits remain unchanged."
+    },
+    "reference_batching": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_batches",
+        "max_total_bytes",
+        "max_total_files",
+        "max_total_seconds"
+      ],
+      "properties": {
+        "max_batches": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "max_total_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8589934592
+        },
+        "max_total_files": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        },
+        "max_total_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3600
+        }
+      }
     }
   },
   "description": "Independent directory data contract, not a task-profile or v2 plan. Runtime validates canonical exact paths, duplicate roles, project binding and no-symlink roots. Archive/records declarations never grant external writes; explicit matching runtime grants are required.",

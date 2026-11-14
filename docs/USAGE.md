@@ -1,5 +1,7 @@
 # 使用说明 / Usage
 
+1.5.0 新入口和兼容范围见 [升级说明](UPGRADE_1_5.md)：分批引用与续办、动态复核包、明确生成物处置、联合预演、字面保留及绑定影响。详细版本与验收状态见 [版本记录](CHANGELOG.md) 和 [工程计划](ENGINEERING_PLAN.md)。
+
 推荐Python3.12，最低兼容3.9。官网：[www.fifanlabs.com](https://www.fifanlabs.com)。先确认真实项目、适用规则和本轮授权；不要把共同父目录当目标。
 
 ## 安装与入口

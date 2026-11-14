@@ -9,7 +9,7 @@ def add_parser(commands):
     group = commands.add_parser('directory', help='Bounded directory and search maintenance')
     actions = group.add_subparsers(dest='directory_action', required=True)
     names = ('census', 'impact', 'search-preview', 'archive-preview', 'apply',
-             'verify', 'locate', 'restore-preview', 'restore', 'recover', 'workflow')
+             'verify', 'locate', 'restore-preview', 'restore', 'recover', 'workflow', 'reference-estimate', 'reference-advance')
     for name in names:
         cmd = actions.add_parser(name)
         cmd.add_argument('--project', '--root', required=True)
@@ -18,8 +18,8 @@ def add_parser(commands):
         cmd.add_argument('--max-output-bytes', type=int, default=8192)
         if name == 'census':
             cmd.add_argument('--hash-candidates', nargs='+')
-        if name in ('impact', 'archive-preview', 'workflow'):
-            cmd.add_argument('--request', required=name != 'workflow')
+        if name in ('impact', 'archive-preview', 'workflow', 'reference-estimate', 'reference-advance'):
+            cmd.add_argument('--request', required=name not in ('workflow', 'reference-estimate', 'reference-advance'))
         if name in ('search-preview', 'archive-preview', 'apply', 'restore-preview', 'restore', 'workflow'):
             cmd.add_argument('--plan', required=name != 'workflow')
         if name in ('verify', 'locate', 'restore-preview', 'recover', 'workflow'):
@@ -30,6 +30,10 @@ def add_parser(commands):
             cmd.add_argument('--archive-root')
         if name in ('archive-preview', 'apply', 'restore', 'recover', 'workflow'):
             cmd.add_argument('--records-dir', required=True)
+        if name == 'reference-advance':
+            cmd.add_argument('--resume')
+            cmd.add_argument('--reference-fingerprint')
+            cmd.add_argument('--max-batches', type=int, default=1)
         if name == 'workflow':
             cmd.add_argument('--phase', choices=('inspect', 'search', 'archive', 'restore'), default='inspect')
             cmd.add_argument('--resume')
@@ -130,6 +134,18 @@ def run(root, config, args):
         if any(path and _key(str(output)) == _key(str(canonical_destination(Path(path).expanduser().absolute()))) for path in inputs):
             raise DirectoryError('OUTPUT_INPUT_CONFLICT')
     limit = profile.budgets['max_artifact_bytes']
+    if action in ('reference-estimate', 'reference-advance'):
+        from .reference_batches import estimate, advance
+        from .directory_census import _References, _request_batches
+        request = load_artifact(args.request, limit=limit) if args.request else None
+        sources = tuple(item['source'] for item in _request_batches(profile, request)) if request else ()
+        reader = _References(profile, sources)
+        roots = [item['path'] for item in profile.data['reference_sources']]
+        result = (estimate(reader, roots) if action == 'reference-estimate' else advance(reader, roots,
+            resume=load_artifact(args.resume, limit=limit) if args.resume else None,
+            expected_fingerprint=args.reference_fingerprint, max_batches=args.max_batches))
+        from .cleanup_cli import _emit_reference
+        return _emit_reference(profile, args, result)
     if action == 'census':
         from .directory_census import census
         return _output(profile, args, census(profile, hash_candidates=args.hash_candidates))

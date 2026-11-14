@@ -21,7 +21,7 @@ from .directory_census import _References, _references_to, _Walk
 KINDS = {'old_build', 'completed_log', 'disposable_output'}
 PROFILE_FIELDS = {'schema_version', 'project_root', 'preset', 'scan_roots', 'current', 'keep',
                   'protected', 'candidates', 'rules', 'reference_sources', 'streaming_references',
-                  'quarantine_root', 'records_dir', 'require_no_open_handles', 'budgets'}
+                  'quarantine_root', 'records_dir', 'require_no_open_handles', 'budgets', 'reference_batching'}
 BUILD_FIELDS = {'platform', 'branch', 'configuration', 'purpose'}
 HARD_ROOTS = {'src', 'source', 'scripts', 'tools', 'assets', 'resources', 'packages', 'projectsettings',
               'library', 'temp', 'obj', 'usersettings', 'node_modules', 'saves', 'savedata', 'userdata', 'data'}
@@ -216,9 +216,12 @@ def load_profile(root, config, path_or_dict):
     _paths([item['path'] for item in result['keep']])
     result['candidates'] = []
     for item in data.get('candidates', []):
-        if not isinstance(item, dict) or set(item) != {'path', 'kind'} or not isinstance(item.get('kind'), str) or item.get('kind') not in KINDS:
+        if (not isinstance(item, dict) or set(item) - {'path', 'kind', 'disposal_policy'}
+                or not {'path', 'kind'} <= set(item) or not isinstance(item.get('kind'), str) or item.get('kind') not in KINDS):
             _fail()
         dc.relative(item['path'])
+        if 'disposal_policy' in item and (item['kind'] != 'old_build' or item['disposal_policy'] != 'generated_artifact'):
+            _fail('INVALID_INPUT', 'generated disposal policy requires an exact old_build candidate')
         result['candidates'].append(copy.deepcopy(item))
     _paths([item['path'] for item in result['candidates']])
     result['rules'] = []
@@ -250,6 +253,9 @@ def load_profile(root, config, path_or_dict):
         if type(value) is not int or not (0 if key == 'max_depth' else 1) <= value <= dc.HARD_BUDGETS[key]:
             _fail('BUDGET_EXHAUSTED')
     result['budgets'] = {**dc.DEFAULT_BUDGETS, **budgets}
+    if 'reference_batching' in data:
+        from .reference_batches import validate_options
+        result['reference_batching'] = validate_options(data['reference_batching'])
     profile = CleanupProfile(root, copy.deepcopy(config), result, dc.digest(result), copy.deepcopy(result['budgets']))
     info = dc.stat_entry(root, '.')
     profile._root_identity = (info.st_dev, info.st_ino)
@@ -292,7 +298,7 @@ def validate_request(profile, request):
     candidates = {dc.path_key(item['path']): item for item in profile.data['candidates']}
     keep = {dc.path_key(item['path']) for item in profile.data['keep']}
     for item in result['items']:
-        fields = {'source', 'kind', 'reason', 'closure', 'loss', 'retained', 'build', 'disposition', 'dynamic_reference_resolutions'}
+        fields = {'source', 'kind', 'reason', 'closure', 'loss', 'retained', 'build', 'disposition', 'dynamic_reference_resolutions', 'generated_disposal'}
         if not isinstance(item, dict) or set(item) - fields or not {'source', 'kind', 'reason', 'closure', 'loss', 'retained'} <= set(item):
             _fail()
         source = dc.relative(item['source'])
@@ -320,7 +326,19 @@ def validate_request(profile, request):
         item['retained'] = _paths(item['retained'])
         if any(dc.path_key(path) not in keep for path in item['retained']):
             _fail('RETAINED_NOT_DECLARED')
-        if item['kind'] == 'old_build' or 'build' in item:
+        if 'generated_disposal' in item:
+            grant = item['generated_disposal']
+            if (item['kind'] != 'old_build' or declared.get('disposal_policy') != 'generated_artifact'
+                    or not isinstance(grant, dict) or set(grant) != {'generated_only', 'reason'}
+                    or grant['generated_only'] is not True or not _text(grant['reason'])
+                    or not loss['accepted'] or loss['unique_evidence']):
+                _fail('GENERATED_BUILD_APPROVAL_REQUIRED', 'generated build disposal requires exact policy, attestation and explicit loss acceptance')
+            build = item.get('build', {})
+            if (not isinstance(build, dict) or set(build) - BUILD_FIELDS
+                    or any(not _text(value) for value in build.values())):
+                _fail('BUILD_GROUP_UNKNOWN', 'provided build metadata must remain explicit text')
+            item['build'] = copy.deepcopy(build)
+        elif item['kind'] == 'old_build' or 'build' in item:
             item['build'] = _build(item.get('build'))
         resolutions = item.setdefault('dynamic_reference_resolutions', [])
         if not isinstance(resolutions, list) or len(resolutions) > 100000:
@@ -346,6 +364,8 @@ def _read_adapter(profile):
     data = {'preset': profile.data['preset'], 'reference_sources': profile.data['reference_sources'],
             'streaming_references': profile.data['streaming_references'], 'classifications': [],
             'critical_paths': profile.data['current'], 'scan_roots': profile.data['scan_roots']}
+    if 'reference_batching' in profile.data:
+        data['reference_batching'] = profile.data['reference_batching']
     config = copy.deepcopy(profile.config)
     config['protected'] = config.get('protected', []) + profile.data['protected']
     value = dc.DirectoryProfile(profile.root, config, data, profile.sha256, profile.budgets)
@@ -369,7 +389,7 @@ class _RetainedReferences(_References):
                 and not any(entry['role'] == 'current' and _overlap(path, entry['path'])
                             for entry in self.cleanup_profile.data['reference_sources']))
 
-    def load_all(self):
+    def reference_roots(self):
         declarations = self.profile.data['reference_sources']
         roots = []
         for declaration in declarations:
@@ -382,6 +402,15 @@ class _RetainedReferences(_References):
             else:
                 roots.append(declaration['path'])
         self.active_roots = roots
+        return roots
+
+    def load_all(self):
+        declarations = self.profile.data['reference_sources']
+        roots = self.reference_roots()
+        if 'reference_batching' in self.profile.data:
+            from .reference_batches import load_all
+            load_all(self, roots)
+            return
         try:
             for path, _ in self.walk.walk(roots):
                 try:
@@ -644,7 +673,7 @@ def qualify(profile, request, *, relocations=None):
             proofs, failures = _proofs(reader, declaration['evidence'], discard)
             blockers.extend(failures)
             retained.append({**retained_map[dc.path_key(path)], 'evidence': proofs})
-        if item['kind'] == 'old_build' and (not retained or not any(value.get('build') == item['build'] for value in retained)):
+        if item['kind'] == 'old_build' and 'generated_disposal' not in item and (not retained or not any(value.get('build') == item['build'] for value in retained)):
             blockers.append({'reason_code': 'RETAINED_BUILD_GROUP_MISSING'})
         resolutions = {}
         fields = ('path', 'sha256', 'line', 'column', 'line_sha256', 'expression_sha256')
@@ -675,6 +704,12 @@ def qualify(profile, request, *, relocations=None):
                  'purge_authorized': 'purge' in request['approval']['actions'] and item['disposition'] == 'purge' and item['loss']['accepted'],
                  'payload_manifest_validation': 'Not run', 'retained_runtime_validation': 'Not run',
                  'rebuildability': item['loss']['rebuildable']}
+        if 'generated_disposal' in item:
+            missing = sorted(key for key in BUILD_FIELDS if key not in item['build'] or item['build'][key].casefold() == 'unknown')
+            value['build_provenance'] = {'status': 'Unknown' if missing else 'Known',
+                                         'metadata': copy.deepcopy(item['build']), 'missing_fields': missing}
+            value['retention_comparison'] = 'WaivedByExplicitLossApproval'
+            value['generated_disposal'] = copy.deepcopy(item['generated_disposal'])
         results.append(value)
         material_items.append({'source': source, 'kind': item['kind'], 'closure_evidence': closure, 'retained': retained,
                                'current_paths': current_paths, 'reference_fingerprints': fingerprints,
@@ -683,6 +718,9 @@ def qualify(profile, request, *, relocations=None):
                                'skipped_discarded_references': sorted(item['source'] for item in (request['items'] if request else [])
                                                        if item['kind'] == 'completed_log' and not item['loss']['unique_evidence']
                                                        and not protected(profile, item['source']))})
+        if 'generated_disposal' in item:
+            material_items[-1].update({key: copy.deepcopy(value[key]) for key in
+                                      ('build_provenance', 'retention_comparison', 'generated_disposal')})
         artifact_bytes += len(dc.canonical(value)) + len(dc.canonical(material_items[-1]))
         if artifact_bytes > profile.budgets['max_artifact_bytes']:
             _fail('BUDGET_EXHAUSTED', 'qualification retained state exceeds artifact budget')
@@ -826,3 +864,17 @@ def inspect(profile, request=None):
     if len(dc.canonical(report)) > profile.budgets['max_artifact_bytes']:
         _fail('BUDGET_EXHAUSTED')
     return dc.seal(report)
+
+
+def reference_inspection(profile, request=None, *, resume=None, expected_fingerprint=None, estimate_only=False, max_batches=1):
+    """Request-bound inspection only; operation entry points always rescan."""
+    from .reference_batches import estimate, advance
+    validate_profile_root(profile)
+    request = validate_request(profile, request) if request is not None else None
+    reader = _RetainedReferences(profile, request['items'] if request else [])
+    roots = reader.reference_roots()
+    if estimate_only:
+        return estimate(reader, roots)
+    result = advance(reader, roots, resume=resume, expected_fingerprint=expected_fingerprint, max_batches=max_batches)
+    validate_profile_root(profile)
+    return result

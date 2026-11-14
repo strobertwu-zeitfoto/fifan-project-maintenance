@@ -45,7 +45,7 @@ HARD_BUDGETS = {
 }
 PROFILE_FIELDS = {'schema_version', 'project_root', 'preset', 'scan_roots',
                   'critical_paths', 'reference_sources', 'classifications',
-                  'search', 'archive', 'budgets', 'streaming_references'}
+                  'search', 'archive', 'budgets', 'streaming_references', 'reference_batching'}
 
 
 class DirectoryError(DiagnosticError):
@@ -292,12 +292,16 @@ def stat_entry(root, rel):
         return os.stat(name, dir_fd=fd, follow_symlinks=False)
 
 
-def read_file(root, rel, limit):
+def read_file(root, rel, limit, *, strict_io=False):
     relative(rel)
+    if type(strict_io) is not bool:
+        raise DirectoryError('INVALID_INPUT', 'invalid strict IO policy')
     if type(limit) is not int or limit < 0:
         raise DirectoryError('INVALID_INPUT', 'invalid file byte limit')
     # Keep the existing stable regular-file reader and its exact FD boundary.
     with open_dir(root):
+        if strict_io:
+            return read_bytes(Path(root), rel, limit, probe=False)
         return read_bytes(Path(root), rel, limit)
 
 
@@ -484,6 +488,9 @@ def load_profile(root, config, profile_path_or_dict, *, external_metadata=True):
         if type(value) is not int or not lower <= value <= HARD_BUDGETS[key]:
             raise DirectoryError('BUDGET_EXHAUSTED', 'directory budget outside hard limits', limit=HARD_BUDGETS[key])
     result['budgets'] = {**DEFAULT_BUDGETS, **budgets}
+    if 'reference_batching' in data:
+        from .reference_batches import validate_options
+        result['reference_batching'] = validate_options(data['reference_batching'])
     if len(canonical(result)) > result['budgets']['max_artifact_bytes']:
         raise DirectoryError('BUDGET_EXHAUSTED', 'directory profile exceeds artifact limit')
     profile = DirectoryProfile(root, copy.deepcopy(config), result, digest(result), dict(result['budgets']))
