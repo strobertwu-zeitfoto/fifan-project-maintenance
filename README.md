@@ -8,16 +8,16 @@ AI 少翻文件，把 token 留给开发。
 
 简体中文 · [English](README.en.md) · [官网 www.fifanlabs.com](https://www.fifanlabs.com)
 
-## 下载 1.5.0
+## 下载 1.5.1
 
 | 下载 | 内容 |
 | --- | --- |
-| **[完整工具包 ZIP（推荐）](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.0/fifan-project-maintenance-1.5.0.zip)** | CLI 源码、Skill、说明、示例及测试；不含 Python 或虚拟环境 |
-| [配套 Skill ZIP](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.0/fifan-project-maintenance-skill-1.5.0.zip) | 给 Agent 使用的引导；仍需安装 CLI 并填入实际入口 |
-| [Python wheel](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.0/fifan_project_maintenance-1.5.0-py3-none-any.whl) | 适合已有 Python 环境的用户，依赖安装可能需要联网 |
-| [SHA-256 校验文件](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.0/SHA256SUMS) | 校验上述三个文件 |
+| **[完整工具包 ZIP（推荐）](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.1/fifan-project-maintenance-1.5.1.zip)** | CLI 源码、Skill、说明、示例及测试；不含 Python 或虚拟环境 |
+| [配套 Skill ZIP](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.1/fifan-project-maintenance-skill-1.5.1.zip) | 给 Agent 使用的引导；仍需安装 CLI 并填入实际入口 |
+| [Python wheel](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.1/fifan_project_maintenance-1.5.1-py3-none-any.whl) | 适合已有 Python 环境的用户，依赖安装可能需要联网 |
+| [SHA-256 校验文件](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.1/SHA256SUMS) | 校验上述三个文件 |
 
-**[安装步骤](INSTALL.md)** · [1.5.0 发行说明](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/tag/v1.5.0) · [查看最新版本](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/latest)
+**[安装步骤](INSTALL.md)** · [1.5.1 发行说明](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/tag/v1.5.1) · [查看最新版本](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/latest)
 
 推荐 macOS + Python 3.12。这是本地命令行工具；Agent 可代为安装和使用。平台验证范围见 [验证说明](docs/VALIDATION.md)。
 
@@ -197,7 +197,7 @@ sequenceDiagram
 
 ### 安装
 
-当前功能版本 **1.5.0**：新增分批引用/续办、动态提示复核包、明确生成物清理合同、导航与归档联合预演及字面保留检查。见 [1.5 使用说明](docs/UPGRADE_1_5.md)、[版本记录](docs/CHANGELOG.md) 与 [工程计划](docs/ENGINEERING_PLAN.md)。旧命令/profile默认行为保留。
+**1.5 系列**新增分批引用/续办、动态提示复核包、明确生成物清理合同、导航与归档联合预演及字面保留检查。见 [1.5 使用说明](docs/UPGRADE_1_5.md)、[版本记录](docs/CHANGELOG.md) 与 [工程计划](docs/ENGINEERING_PLAN.md)。旧命令/profile默认行为保留。
 
 下载完整工具包并解压，或克隆本仓库；完整步骤及独立 Skill 安装见 [INSTALL.md](INSTALL.md)。
 

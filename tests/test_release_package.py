@@ -20,7 +20,7 @@ spec.loader.exec_module(release)
 NOTICE = b'Notices: [licenses](docs/licenses) and [dependencies](docs/DEPENDENCIES.md)\n'
 
 
-def write_wheel(path, runtime, notice=NOTICE, *, version='1.5.0', extra=None, bad_record=False):
+def write_wheel(path, runtime, notice=NOTICE, *, version='1.5.1', extra=None, bad_record=False):
     dist = release.DIST_INFO
     members = {**runtime,
         dist + 'METADATA': ('Metadata-Version: 2.1\nName: fifan-project-maintenance\nVersion: ' + version + '\n').encode(),
@@ -47,10 +47,10 @@ def candidate(tmp_path):
     for name in release.FILES:
         (root / name).write_text('Synthetic ' + name + '\n')
     (root / 'NOTICE.md').write_bytes(NOTICE)
-    (root / 'pyproject.toml').write_text('[project]\nname = "fifan-project-maintenance"\nversion = "1.5.0"\n')
+    (root / 'pyproject.toml').write_text('[project]\nname = "fifan-project-maintenance"\nversion = "1.5.1"\n')
     for name in release.DIRECTORIES:
         (root / name).mkdir(parents=True, exist_ok=True)
-    runtime = {'fifan_maintenance/__init__.py': b'__version__ = "1.5.0"\n',
+    runtime = {'fifan_maintenance/__init__.py': b'__version__ = "1.5.1"\n',
                'fifan_maintenance/cli.py': b'def main():\n    return 0\n'}
     for name, data in runtime.items():
         (root / 'src' / name).write_bytes(data)
@@ -71,7 +71,7 @@ def candidate(tmp_path):
     (root / '.git').mkdir()
     (root / '.git/private-state').write_text('not public\n')
     (root / 'outside-closed-roots.txt').write_text('not public\n')
-    wheel = tmp_path / ('fifan_project_maintenance-1.5.0-py3-none-any.whl')
+    wheel = tmp_path / ('fifan_project_maintenance-1.5.1-py3-none-any.whl')
     write_wheel(wheel, runtime)
     return root, wheel, runtime
 
@@ -80,7 +80,7 @@ def test_three_assets_notices_checksums_contents_and_fixed_metadata(candidate, t
     root, wheel, _ = candidate
     output = tmp_path / 'release'
     result = release.build_release(root, output, wheel)
-    expected = {'fifan-project-maintenance-1.5.0.zip', 'fifan-project-maintenance-skill-1.5.0.zip', wheel.name, 'SHA256SUMS'}
+    expected = {'fifan-project-maintenance-1.5.1.zip', 'fifan-project-maintenance-skill-1.5.1.zip', wheel.name, 'SHA256SUMS'}
     assert {name.name for name in output.iterdir()} == expected
     assert result['runtime_python_files_verified'] == 2
     assert (output / wheel.name).read_bytes() == wheel.read_bytes()
@@ -88,9 +88,9 @@ def test_three_assets_notices_checksums_contents_and_fixed_metadata(candidate, t
         checksum, name = line.split('  ')
         assert hashlib.sha256((output / name).read_bytes()).hexdigest() == checksum
     assert len((output / 'SHA256SUMS').read_text().splitlines()) == 3
-    with zipfile.ZipFile(output / 'fifan-project-maintenance-1.5.0.zip') as archive:
+    with zipfile.ZipFile(output / 'fifan-project-maintenance-1.5.1.zip') as archive:
         names = archive.namelist()
-        prefix = 'fifan-project-maintenance-1.5.0/'
+        prefix = 'fifan-project-maintenance-1.5.1/'
         assert names == sorted(names)
         assert all(name.startswith(prefix) for name in names)
         assert prefix + 'src/fifan_maintenance/cli.py' in names
@@ -101,7 +101,7 @@ def test_three_assets_notices_checksums_contents_and_fixed_metadata(candidate, t
         assert all('.venv' not in name and '.git/' not in name and 'outside-closed-roots' not in name for name in names)
         assert archive.getinfo(prefix + 'bin/fifan-maintain').external_attr >> 16 & 0o777 == 0o755
         assert all(entry.date_time == (1980, 1, 1, 0, 0, 0) for entry in archive.infolist())
-    with zipfile.ZipFile(output / 'fifan-project-maintenance-skill-1.5.0.zip') as archive:
+    with zipfile.ZipFile(output / 'fifan-project-maintenance-skill-1.5.1.zip') as archive:
         assert archive.namelist() == ['fifan-project-maintenance/' + name for name in
             ('NOTICE.md', 'SKILL.md', 'docs/DEPENDENCIES.md', 'docs/licenses/upstream.txt', 'references/usage.md')]
         for name in ('NOTICE.md', 'docs/DEPENDENCIES.md', 'docs/licenses/upstream.txt'):
@@ -135,7 +135,7 @@ def test_excludes_sensitive_filenames_and_non_source_artifacts(candidate, tmp_pa
         target.write_text('must not enter archive')
     out = tmp_path / 'out'
     release.build_release(root, out, wheel)
-    with zipfile.ZipFile(out / 'fifan-project-maintenance-1.5.0.zip') as archive:
+    with zipfile.ZipFile(out / 'fifan-project-maintenance-1.5.1.zip') as archive:
         assert all('/docs/' + name not in path for path in archive.namelist())
 
 
@@ -195,7 +195,7 @@ def test_rejects_stale_same_version_and_forged_wheels(candidate, tmp_path, forge
     runtime = dict(runtime)
     kwargs = {}
     if forgery == 'stale-python':
-        runtime['fifan_maintenance/cli.py'] = b'# stale version1.5.0 implementation\n'
+        runtime['fifan_maintenance/cli.py'] = b'# stale version1.5.1 implementation\n'
     elif forgery == 'missing-python':
         runtime.pop('fifan_maintenance/cli.py')
     elif forgery == 'extra-python':
@@ -210,7 +210,7 @@ def test_rejects_stale_same_version_and_forged_wheels(candidate, tmp_path, forge
         kwargs['notice'] = b'forged or missing third-party credit\n'
     write_wheel(wheel, runtime, **kwargs)
     if forgery == 'wrong-name':
-        replacement = wheel.with_name('other-1.5.0-py3-none-any.whl')
+        replacement = wheel.with_name('other-1.5.1-py3-none-any.whl')
         wheel.rename(replacement)
         wheel = replacement
     out = tmp_path / 'out'

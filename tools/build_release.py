@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the three offline 1.5.0 public assets; never publish or install them.
+"""Build the three offline 1.5.1 public assets; never publish or install them.
 
 Only closed source roots enter the source ZIP. Filename exclusions are not a
 secret-content scanner: public prose/fixtures still need the owner's review.
@@ -21,7 +21,7 @@ import re
 import stat
 import zipfile
 
-VERSION = '1.5.0'
+VERSION = '1.5.1'
 NAME = 'fifan-project-maintenance'
 FILES = ('README.md', 'README.en.md', 'INSTALL.md', 'NOTICE.md', 'requirements.txt',
          'pyproject.toml', '.gitignore', 'AGENTS.md')
@@ -310,7 +310,7 @@ def build_release(source, output, wheel):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', required=True, help='External NEW output directory; parent must already exist')
-    parser.add_argument('--wheel', required=True, help='Existing source-matched 1.5.0 pure Python wheel')
+    parser.add_argument('--wheel', required=True, help='Existing source-matched 1.5.1 pure Python wheel')
     args = parser.parse_args(argv)
     result = build_release(Path(__file__).absolute().parents[1], args.output, args.wheel)
     print(json.dumps(result, ensure_ascii=False))

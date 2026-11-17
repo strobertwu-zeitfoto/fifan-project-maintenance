@@ -1,6 +1,6 @@
 # Fifan Project Maintenance
 
-Feature version **1.5.0** adds opt-in bounded reference batches/resume, reference review packs, explicit generated-build disposal, read-only joint navigation/archive previews, and literal preservation/binding advice. See [upgrade guide](docs/UPGRADE_1_5.md), [changelog](docs/CHANGELOG.md), and [validation scope](docs/VALIDATION.md). Legacy commands and profiles retain their default behavior.
+The **1.5 series** adds opt-in bounded reference batches/resume, reference review packs, explicit generated-build disposal, read-only joint navigation/archive previews, and literal preservation/binding advice. See [upgrade guide](docs/UPGRADE_1_5.md), [changelog](docs/CHANGELOG.md), and [validation scope](docs/VALIDATION.md). Legacy commands and profiles retain their default behavior.
 
 <img src="docs/images/mascot.png" width="192" height="128" alt="An AI file-folder mascot wearing a nurse cap with a red cross" />
 
@@ -10,16 +10,16 @@ Let AI read less unrelated material and focus on development.
 
 [简体中文](README.md) · English · [www.fifanlabs.com](https://www.fifanlabs.com)
 
-## Download 1.5.0
+## Download 1.5.1
 
 | Download | Contents |
 | --- | --- |
-| **[Full toolkit ZIP (recommended)](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.0/fifan-project-maintenance-1.5.0.zip)** | CLI source, Skill, documentation, examples and tests; Python/environment not bundled |
-| [Companion Skill ZIP](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.0/fifan-project-maintenance-skill-1.5.0.zip) | Agent guidance; requires the CLI and its actual local path |
-| [Python wheel](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.0/fifan_project_maintenance-1.5.0-py3-none-any.whl) | For an existing Python environment; installing dependencies may need network access |
-| [SHA-256 checksums](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.0/SHA256SUMS) | Verify the three files above |
+| **[Full toolkit ZIP (recommended)](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.1/fifan-project-maintenance-1.5.1.zip)** | CLI source, Skill, documentation, examples and tests; Python/environment not bundled |
+| [Companion Skill ZIP](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.1/fifan-project-maintenance-skill-1.5.1.zip) | Agent guidance; requires the CLI and its actual local path |
+| [Python wheel](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.1/fifan_project_maintenance-1.5.1-py3-none-any.whl) | For an existing Python environment; installing dependencies may need network access |
+| [SHA-256 checksums](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/download/v1.5.1/SHA256SUMS) | Verify the three files above |
 
-**[Installation](INSTALL.md#english-quick-start)** · [Release notes](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/tag/v1.5.0) · [Latest release](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/latest)
+**[Installation](INSTALL.md#english-quick-start)** · [Release notes](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/tag/v1.5.1) · [Latest release](https://github.com/strobertwu-zeitfoto/fifan-project-maintenance/releases/latest)
 
 Recommended: macOS and Python 3.12. This is a local command-line toolkit; an Agent with local execution can install and operate it. See [validation scope](docs/VALIDATION.md).
 
